@@ -8,7 +8,7 @@ export class LoginController extends BaseEntity {
   constructor(private readonly generateTokenService: GenerateTokenService) {
     super();
   }
-  handle = async (
+  handler = async (
     request: FastifyRequest<{
       Body: Login;
     }>,

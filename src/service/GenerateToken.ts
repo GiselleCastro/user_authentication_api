@@ -1,5 +1,5 @@
 import type { UserRepository } from "../repositories/User";
-import type { SendEmailService } from "./SendEmail";
+import type { SendEmailConfirmEmailService } from "./SendEmailConfirmEmail";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { constants } from "../config/constants";
@@ -16,7 +16,7 @@ const { SECRET_TOKEN_ACCESS, EXPIRES_IN_TOKEN_ACCESS } = constants;
 export class GenerateTokenService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly sendEmailService: SendEmailService,
+    private readonly sendEmailConfirmEmailService: SendEmailConfirmEmailService,
   ) {}
   async execute(login: string, password: string) {
     const user = await this.userRepository.getUserByLogin(login);
@@ -26,7 +26,10 @@ export class GenerateTokenService {
     }
 
     if (!user.confirmed) {
-      await this.sendEmailService.toConfirmEmail(user.username, user.email);
+      await this.sendEmailConfirmEmailService.execute(
+        user.username,
+        user.email,
+      );
       throw new UnauthorizedError(CONFIRM_EMAIL);
     }
 

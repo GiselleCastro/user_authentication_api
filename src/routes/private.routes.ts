@@ -12,6 +12,6 @@ export const privateRoutes = async (fastify: FastifyInstance) => {
   }>("/change-password", {
     schema: schemasSwagger.changePassword,
     preHandler: [middleware.validateChangePasswordInput],
-    handler: controller.userController.changePassword,
+    handler: controller.changePasswordController.handler,
   });
 };

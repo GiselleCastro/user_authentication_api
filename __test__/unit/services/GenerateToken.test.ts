@@ -1,8 +1,9 @@
 import { GenerateTokenService } from "../../../src/service/GenerateToken";
+import { SendEmailService } from "../../../src/config/EmailSending.config";
 import { UserRepository } from "../../../src/repositories/User";
-import { SendEmailService } from "../../../src/service/SendEmail";
+import { SendEmailConfirmEmailService } from "../../../src/service/SendEmailConfirmEmail";
 import jwt from "jsonwebtoken";
-import { faker } from "@faker-js/faker/.";
+import { faker } from "@faker-js/faker";
 import { UUID } from "../../../src/@types";
 import {
   BadRequestError,
@@ -13,16 +14,20 @@ import bcrypt from "bcrypt";
 jest.mock("bcrypt");
 jest.mock("jsonwebtoken");
 jest.mock("../../../src/repositories/User");
-jest.mock("../../../src/service/SendEmail");
+jest.mock("../../../src/service/SendEmailConfirmEmail");
 
 const makeSut = () => {
   const userRepositoryStub =
     new UserRepository() as jest.Mocked<UserRepository>;
-  const sendEmailService =
-    new SendEmailService() as jest.Mocked<SendEmailService>;
-  const sut = new GenerateTokenService(userRepositoryStub, sendEmailService);
+  const sendEmailConfirmEmailServiceStub = new SendEmailConfirmEmailService(
+    new SendEmailService(),
+  ) as jest.Mocked<SendEmailConfirmEmailService>;
+  const sut = new GenerateTokenService(
+    userRepositoryStub,
+    sendEmailConfirmEmailServiceStub,
+  );
 
-  return { sut, userRepositoryStub, sendEmailService };
+  return { sut, userRepositoryStub };
 };
 
 describe("GenerateTokenService", () => {

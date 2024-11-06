@@ -1,12 +1,12 @@
 import type { FastifyInstance } from "fastify/types/instance";
-import { UserService } from "../../../src/service/User";
+import { ResetPasswordService } from "../../../src/service/ResetPassword";
 import { buildServer } from "../../../server";
-import { faker } from "@faker-js/faker/.";
+import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";
 import HttpStatusCode from "http-status-codes";
 
-jest.mock("../../../src/service/User");
+jest.mock("../../../src/service/ResetPassword");
 
 describe("POST /reset-password", () => {
   let serverStub: FastifyInstance;
@@ -29,7 +29,7 @@ describe("POST /reset-password", () => {
     };
 
     const resetPasswordServiceSpy = jest
-      .spyOn(UserService.prototype, "resetPassword")
+      .spyOn(ResetPasswordService.prototype, "execute")
       .mockResolvedValue();
 
     const response = await serverStub.inject({
@@ -58,7 +58,7 @@ describe("POST /reset-password", () => {
 
     const messageError = "error";
     const resetPasswordServiceSpy = jest
-      .spyOn(UserService.prototype, "resetPassword")
+      .spyOn(ResetPasswordService.prototype, "execute")
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({

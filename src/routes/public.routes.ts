@@ -11,7 +11,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
     schema: schemasSwagger.createUser,
     preHandler: [middleware.validateCreateUserInput],
 
-    handler: controller.userController.createUser,
+    handler: controller.createUserController.handler,
   });
 
   fastify.post<{
@@ -19,7 +19,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>("/login", {
     schema: schemasSwagger.login,
     preHandler: [middleware.validateLoginInput],
-    handler: controller.loginControllerController.handle,
+    handler: controller.loginControllerController.handler,
   });
 
   fastify.post<{
@@ -27,7 +27,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>("/forgot-password", {
     schema: schemasSwagger.forgotPassword,
     preHandler: [middleware.validateLoginToRecoverPasswordInput],
-    handler: controller.userController.sendEmailToResetPassword,
+    handler: controller.sendEmailResetPasswordController.handler,
   });
 
   fastify.post<{
@@ -39,7 +39,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
       middleware.validateTokenInput,
       middleware.validateNewPasswordInput,
     ],
-    handler: controller.userController.resetPassword,
+    handler: controller.resetPasswordController.handler,
   });
 
   fastify.get<{
@@ -47,6 +47,6 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>("/confirm-email", {
     schema: schemasSwagger.confirmEmail,
     preHandler: [middleware.validateTokenInput],
-    handler: controller.userController.confirmEmail,
+    handler: controller.confirmEmailController.handler,
   });
 };

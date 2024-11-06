@@ -1,15 +1,15 @@
 import type { FastifyInstance } from "fastify/types/instance";
-import { UserService } from "../../../src/service/User";
+import { ChangePassowrdService } from "../../../src/service/ChangePassword";
 import { CheckAutheticationMiddleware } from "../../../src/middleware/CheckAuthetication";
 import { buildServer } from "../../../server";
-import { faker } from "@faker-js/faker/.";
+import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
 import { UUID } from "../../../src/@types";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";
 import HttpStatusCode from "http-status-codes";
 
 jest.mock("../../../src/middleware/CheckAuthetication");
-jest.mock("../../../src/service/User");
+jest.mock("../../../src/service/ChangePassword");
 
 describe("PATCH /my-account/change-password", () => {
   let serverStub: FastifyInstance;
@@ -54,8 +54,8 @@ describe("PATCH /my-account/change-password", () => {
       });
 
     const changePasswordServiceSpy = jest
-      .spyOn(UserService.prototype, "changePassword")
-      .mockImplementationOnce(async () => {});
+      .spyOn(ChangePassowrdService.prototype, "execute")
+      .mockResolvedValue(undefined);
 
     expect(response.statusCode).toBe(HttpStatusCode.NO_CONTENT);
     expect(response.body).toEqual("");
@@ -90,7 +90,7 @@ describe("PATCH /my-account/change-password", () => {
 
     const messageError = "error";
     const changePasswordServiceSpy = jest
-      .spyOn(UserService.prototype, "changePassword")
+      .spyOn(ChangePassowrdService.prototype, "execute")
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({

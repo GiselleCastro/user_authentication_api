@@ -14,7 +14,7 @@ export abstract class BaseEntity {
     this.handlerError = new HandlerError();
   }
 
-  handlerErrorController(
+  protected handlerErrorController(
     error: unknown,
     reply: FastifyReply,
     context?: object,

@@ -24,7 +24,7 @@ const oAuth2Client = new OAuth2(
 oAuth2Client.setCredentials({ refresh_token: SENDER_REFRESH_TOKEN });
 
 export class SendEmailService extends BaseEntity {
-  protected async setTransporter() {
+  private async setTransporter() {
     const accessToken = await oAuth2Client.getAccessToken();
     return nodemailer.createTransport({
       service: "gmail",
@@ -38,7 +38,7 @@ export class SendEmailService extends BaseEntity {
       },
     });
   }
-  private async sendEmail(email: string, mailSubject: string, content: string) {
+  async sendEmail(email: string, mailSubject: string, content: string) {
     const transport = await this.setTransporter();
     transport.set("oauth2_provision_cb", async (user, renew, cb) => {
       try {
