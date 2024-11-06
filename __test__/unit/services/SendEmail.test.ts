@@ -28,8 +28,7 @@ describe("SendEmailService", () => {
 
       (ejs.renderFile as jest.Mock).mockResolvedValue("any");
 
-      jest
-        .spyOn(sut, "sendEmail").mockResolvedValue("any");
+      jest.spyOn(sut, "sendEmail").mockResolvedValue("any");
 
       expect(await sut.toResetPassword(usernameMock, emailMock)).toEqual(
         tokenMock,
@@ -113,9 +112,8 @@ describe("SendEmailService", () => {
 
       (ejs.renderFile as jest.Mock).mockResolvedValue("any");
 
-      jest
-      .spyOn(sut, "sendEmail").mockResolvedValue("any");
-      
+      jest.spyOn(sut, "sendEmail").mockResolvedValue("any");
+
       expect(await sut.toConfirmEmail(usernameMock, emailMock)).toBeUndefined();
       expect(ejs.renderFile).toHaveBeenCalled();
     });

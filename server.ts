@@ -10,7 +10,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 
 const { ENVIRONMENT_ENV } = constants;
 
-const { PORT } = constants;
+const { SERVER_PORT } = constants;
 
 export const buildServer = () => {
   const server: FastifyInstance = Fastify({
@@ -33,10 +33,10 @@ export const server = buildServer();
 
 (async () => {
   try {
-    await server.listen({ port: PORT });
-    server.log.info(`Server listening at http://localhost:${PORT}`);
+    await server.listen({ port: SERVER_PORT, host: "0.0.0.0" });
+    server.log.info(`Server listening at http://localhost:${SERVER_PORT}`);
     server.log.info(
-      `Swagger Documentation >>> http://localhost:${PORT}${swaggerUiOptions.routePrefix}`,
+      `Swagger Documentation >>> http://localhost:${SERVER_PORT}${swaggerUiOptions.routePrefix}`,
     );
   } catch (error) {
     server.log.error(error);

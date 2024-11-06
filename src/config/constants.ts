@@ -2,7 +2,7 @@ import "dotenv/config";
 import type { Environment, LogLevel } from "../enum/index";
 
 export const constants = {
-  PORT: Number(process.env.PORT),
+  SERVER_PORT: Number(process.env.SERVER_PORT),
   ENVIRONMENT_ENV: process.env.ENVIRONMENT_ENV as Environment,
   LOGGER_LEVEL: process.env.LOGGER_LEVEL as LogLevel,
   LOGGER_SERVICE_NAME: process.env.LOGGER_SERVICE_NAME as string,

@@ -1,6 +1,4 @@
-import type { FastifySchema } from "fastify";
-
-export const createUser: FastifySchema = {
+export const createUser = {
   tags: ["User"],
   body: {
     type: "object",
@@ -58,7 +56,7 @@ export const createUser: FastifySchema = {
   },
 };
 
-export const login: FastifySchema = {
+export const login = {
   tags: ["User"],
   body: {
     type: "object",
@@ -114,7 +112,7 @@ export const login: FastifySchema = {
   },
 };
 
-export const forgotPassword: FastifySchema = {
+export const forgotPassword = {
   tags: ["User"],
   body: {
     type: "object",
@@ -149,7 +147,7 @@ export const forgotPassword: FastifySchema = {
   },
 };
 
-export const resetPassword: FastifySchema = {
+export const resetPassword = {
   tags: ["User"],
   querystring: {
     type: "object",
@@ -222,7 +220,7 @@ export const resetPassword: FastifySchema = {
   },
 };
 
-export const confirmEmail: FastifySchema = {
+export const confirmEmail = {
   tags: ["User"],
   querystring: {
     type: "object",
@@ -269,7 +267,7 @@ export const confirmEmail: FastifySchema = {
   },
 };
 
-export const changePassword: FastifySchema = {
+export const changePassword = {
   tags: ["User"],
   body: {
     type: "object",

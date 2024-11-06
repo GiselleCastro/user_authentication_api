@@ -6,6 +6,8 @@
   "scripts": {
     "start": "tsc && node build/server.js",
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "docker:start": "docker-compose --env-file .env up",
+    "docker:dev": "docker-compose --env-file .env -f docker-compose.dev.yaml up",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "prettier": "npx prettier . --write",

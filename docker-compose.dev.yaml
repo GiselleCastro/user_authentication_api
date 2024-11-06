@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  app:
+    image: node:21.5
+    working_dir: /home/gcassalli/Desktop/Portfolio/Containers
+    volumes:
+      - .:/home/gcassalli/Desktop/Portfolio/Containers
+    command: bash -c "rm -rf node_modules && npm install && npm run dev"
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    env_file:
+      - .env
