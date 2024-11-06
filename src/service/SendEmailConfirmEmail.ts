@@ -1,9 +1,9 @@
-import jwt from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import { SendEmailService } from "../config/EmailSending.config";
 import { constants } from "../config/constants";
 import { BaseEntity } from "../config/BaseEntity";
+import { createToken } from "../utils/createToken";
 import { EMAIL_NOT_SENT, EMAIL_TEMPLATE_NOT_RENDERED } from "../utils/messages";
 
 const { SECRET_CONFIRM_EMAIL, EXPIRES_IN_TOKEN_CONFIRM_EMAIL, BASE_URL } =
@@ -15,25 +15,11 @@ export class SendEmailConfirmEmailService extends BaseEntity {
   }
 
   async execute(username: string, email: string) {
-    const generateToken = () =>
-      new Promise((resolve, reject) => {
-        jwt.sign(
-          { email },
-          SECRET_CONFIRM_EMAIL,
-          {
-            expiresIn: 1800,
-          },
-          (error, token) => {
-            if (error)
-              reject(
-                this.handlerError.badRequestError(error.name, [error.message]),
-              );
-            resolve(token);
-          },
-        );
-      });
-
-    const token = await generateToken();
+    const token = await createToken(
+      { email },
+      SECRET_CONFIRM_EMAIL,
+      EXPIRES_IN_TOKEN_CONFIRM_EMAIL,
+    );
 
     await ejs
       .renderFile(path.join(__dirname, "../templates/emailConfirmEmail.ejs"), {

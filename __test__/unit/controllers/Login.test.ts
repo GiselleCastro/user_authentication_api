@@ -1,12 +1,12 @@
 import type { FastifyInstance } from "fastify/types/instance";
-import { GenerateTokenService } from "../../../src/service/GenerateToken";
+import { SignInService } from "../../../src/service/SignIn";
 import { buildServer } from "../../../server";
 import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";
 import HttpStatusCode from "http-status-codes";
 
-jest.mock("../../../src/service/GenerateToken");
+jest.mock("../../../src/service/SignIn");
 
 describe("POST /login", () => {
   let serverStub: FastifyInstance;
@@ -27,7 +27,7 @@ describe("POST /login", () => {
 
     const tokenMock = faker.string.alphanumeric(30);
     const generateTokenServiceSpy = jest
-      .spyOn(GenerateTokenService.prototype, "execute")
+      .spyOn(SignInService.prototype, "execute")
       .mockResolvedValue(tokenMock);
 
     const response = await serverStub.inject({
@@ -56,7 +56,7 @@ describe("POST /login", () => {
 
     const messageError = "error";
     const generateTokenServiceSpy = jest
-      .spyOn(GenerateTokenService.prototype, "execute")
+      .spyOn(SignInService.prototype, "execute")
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({

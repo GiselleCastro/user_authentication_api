@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { constants } from "../config/constants";
 import { BadRequestError, UnauthorizedError } from "../config/BaseError";
 import { TokenJSON, Authorization } from "../@types";
+import { createToken } from "../utils/createToken";
 import {
   PASSWORD_DO_NOT_MATCH,
   CONFIRM_EMAIL,
@@ -13,7 +14,7 @@ import {
 
 const { SECRET_TOKEN_ACCESS, EXPIRES_IN_TOKEN_ACCESS } = constants;
 
-export class GenerateTokenService {
+export class SignInService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly sendEmailConfirmEmailService: SendEmailConfirmEmailService,
@@ -50,21 +51,11 @@ export class GenerateTokenService {
       },
     };
 
-    const generateToken = () =>
-      new Promise((resolve, reject) => {
-        jwt.sign(
-          payload,
-          SECRET_TOKEN_ACCESS,
-          { expiresIn: EXPIRES_IN_TOKEN_ACCESS },
-          (error, token) => {
-            if (error)
-              reject(new UnauthorizedError(error.name, [error.message]));
-            resolve(token);
-          },
-        );
-      });
-
-    const token = await generateToken();
+    const token = await createToken(
+      payload,
+      SECRET_TOKEN_ACCESS,
+      EXPIRES_IN_TOKEN_ACCESS,
+    );
 
     return token;
   }

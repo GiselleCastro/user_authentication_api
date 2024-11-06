@@ -6,7 +6,7 @@ import { ChangePassowrdService } from "./ChangePassword";
 import { ConfirmEmailService } from "./ConfirmEmail";
 import { CreateUserService } from "./CreateUser";
 import { DeleteUserService } from "./DeleteUser";
-import { GenerateTokenService } from "./GenerateToken";
+import { SignInService } from "./SignIn";
 import { ResetPasswordService } from "./ResetPassword";
 import { SendEmailConfirmEmailService } from "./SendEmailConfirmEmail";
 import { SendEmailResetPasswordService } from "./SendEmailResetPassword";
@@ -41,15 +41,12 @@ export class DeleteUserServiceFactory {
   }
 }
 
-export class GenerateTokenServiceFactory {
-  static make(): GenerateTokenService {
+export class SignInServiceFactory {
+  static make(): SignInService {
     const userRepository = new UserRepository();
     const sendEmailConfirmEmailService =
       SendEmailConfirmEmailServiceFactory.make();
-    return new GenerateTokenService(
-      userRepository,
-      sendEmailConfirmEmailService,
-    );
+    return new SignInService(userRepository, sendEmailConfirmEmailService);
   }
 }
 
@@ -72,6 +69,12 @@ export class SendEmailConfirmEmailServiceFactory {
 export class SendEmailResetPasswordServiceFactory {
   static make(): SendEmailResetPasswordService {
     const sendEmailService = new SendEmailService();
-    return new SendEmailResetPasswordService(sendEmailService);
+    const tokenToResetPasswordRepository = new TokenToResetPasswordRepository();
+    const userRepository = new UserRepository();
+    return new SendEmailResetPasswordService(
+      sendEmailService,
+      tokenToResetPasswordRepository,
+      userRepository,
+    );
   }
 }

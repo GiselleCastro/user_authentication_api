@@ -1,11 +1,11 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import type { GenerateTokenService } from "../service/GenerateToken";
+import type { SignInService } from "../service/SignIn";
 import { Login } from "../@types";
 import { BaseEntity } from "../config/BaseEntity";
 import HttpStatusCode from "http-status-codes";
 
 export class LoginController extends BaseEntity {
-  constructor(private readonly generateTokenService: GenerateTokenService) {
+  constructor(private readonly generateTokenService: SignInService) {
     super();
   }
   handler = async (

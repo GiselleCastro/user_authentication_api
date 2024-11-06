@@ -8,6 +8,7 @@ import { UserRepository } from "../repositories/User";
 import { constants } from "../config/constants";
 import { BaseEntity } from "../config/BaseEntity";
 import { BadRequestError } from "../config/BaseError";
+import { createToken } from "../utils/createToken";
 import {
   EMAIL_NOT_SENT,
   EMAIL_TEMPLATE_NOT_RENDERED,
@@ -48,25 +49,12 @@ export class SendEmailResetPasswordService extends BaseEntity {
     email: string,
   ): Promise<string> {
     const randomString = randomstring.generate(20);
-    const generateToken = (): Promise<string> =>
-      new Promise((resolve, reject) => {
-        jwt.sign(
-          { randomString },
-          SECRET_FORGET_PASSWORD,
-          {
-            expiresIn: EXPIRES_IN_TOKEN_RESET_PASSWORD,
-          },
-          (error, token) => {
-            if (error)
-              reject(
-                this.handlerError.badRequestError(error.name, [error.message]),
-              );
-            resolve(token as string);
-          },
-        );
-      });
 
-    const token = await generateToken();
+    const token = await createToken(
+      { randomString },
+      SECRET_FORGET_PASSWORD,
+      EXPIRES_IN_TOKEN_RESET_PASSWORD,
+    );
 
     await ejs
       .renderFile(path.join(__dirname, "../templates/emailResetPassword.ejs"), {

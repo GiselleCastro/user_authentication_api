@@ -24,7 +24,7 @@ export const createUserController = CreateUserControllerFactory.make();
 
 class LoginControllerControllerFactory {
   static make(): LoginController {
-    const generateTokenService = factory.GenerateTokenServiceFactory.make();
+    const generateTokenService = factory.SignInServiceFactory.make();
     return new LoginController(generateTokenService);
   }
 }

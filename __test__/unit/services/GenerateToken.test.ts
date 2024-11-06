@@ -1,4 +1,4 @@
-import { GenerateTokenService } from "../../../src/service/GenerateToken";
+import { SignInService } from "../../../src/service/SignIn";
 import { SendEmailService } from "../../../src/config/EmailSending.config";
 import { UserRepository } from "../../../src/repositories/User";
 import { SendEmailConfirmEmailService } from "../../../src/service/SendEmailConfirmEmail";
@@ -22,7 +22,7 @@ const makeSut = () => {
   const sendEmailConfirmEmailServiceStub = new SendEmailConfirmEmailService(
     new SendEmailService(),
   ) as jest.Mocked<SendEmailConfirmEmailService>;
-  const sut = new GenerateTokenService(
+  const sut = new SignInService(
     userRepositoryStub,
     sendEmailConfirmEmailServiceStub,
   );
@@ -30,7 +30,7 @@ const makeSut = () => {
   return { sut, userRepositoryStub };
 };
 
-describe("GenerateTokenService", () => {
+describe("SignInService", () => {
   it("Token generated successfully", async () => {
     const { sut, userRepositoryStub } = makeSut();
     const usernameMock = faker.person.firstName();

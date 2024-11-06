@@ -1,6 +1,6 @@
 import type { v4 as uuid } from "uuid";
 import { z } from "zod";
-import { TokenJSON, Authorization, Access } from "./accessToken";
+import { TokenJSON, Authorization, Access, isTokenJSON } from "./accessToken";
 import * as Schema from "../schema/index";
 
 export type CreateUser = z.infer<typeof Schema.CreateUser>;
@@ -15,4 +15,4 @@ export type UserId = z.infer<typeof Schema.UserId>;
 
 export type UUID = typeof uuid;
 
-export { TokenJSON, Authorization, Access };
+export { TokenJSON, Authorization, Access, isTokenJSON };
