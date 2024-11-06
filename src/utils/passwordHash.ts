@@ -1,6 +1,6 @@
 import { validationPassword } from "../utils/validationPassword";
 import bcrypt from "bcrypt";
-import { BadRequestError } from "../utils/errors";
+import { BadRequestError } from "../config/BaseError";
 import { PASSWORD_DO_NOT_MATCH, WEAK_PASSWORD } from "./messages";
 
 export const getPasswordHash = async (

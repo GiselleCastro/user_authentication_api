@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { constants } from "../config/constants";
-import { BadRequestError, UnauthorizedError } from "../utils/errors";
+import { BadRequestError, UnauthorizedError } from "../config/BaseError";
 import { TokenJSON, Access } from "../@types";
 import {
   UNAUTHORIZATION,

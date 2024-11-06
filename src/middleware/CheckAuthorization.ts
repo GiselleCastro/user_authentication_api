@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { ForbiddenError } from "../utils/errors";
+import { ForbiddenError } from "../config/BaseError";
 import { Access } from "../@types";
 import { FORBIDDEN } from "../utils/messages";
 

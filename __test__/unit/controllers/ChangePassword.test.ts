@@ -3,7 +3,7 @@ import { UserService } from "../../../src/service/User";
 import { CheckAutheticationMiddleware } from "../../../src/middleware/CheckAuthetication";
 import { buildServer } from "../../../server";
 import { faker } from "@faker-js/faker/.";
-import { BadRequestError } from "../../../src/utils/errors";
+import { BadRequestError } from "../../../src/config/BaseError";
 import { UUID } from "../../../src/@types";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";
 import HttpStatusCode from "http-status-codes";

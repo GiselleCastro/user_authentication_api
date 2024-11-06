@@ -9,7 +9,7 @@ import {
   BadRequestError,
   UnauthorizedError,
   UnprocessableEntityError,
-} from "../../../src/utils/errors";
+} from "../../../src/config/BaseError";
 import { UUID } from "../../../src/@types";
 
 jest.mock("jsonwebtoken");

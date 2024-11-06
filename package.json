@@ -11,7 +11,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "prettier": "npx prettier . --write",
-    "test": "jest --coverage"
+    "test:unit": "jest --coverage"
   },
   "keywords": [],
   "author": "",

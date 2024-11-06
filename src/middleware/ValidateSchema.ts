@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 import { ParameterType } from "../enum/index";
-import { BadRequestError } from "../utils/errors";
+import { BadRequestError } from "../config/BaseError";
 import { BaseEntity } from "../config/BaseEntity";
 import { ERROR_VALIDATION, INTERNAL_SERVER_ERROR } from "../utils/messages";
 import httpStatusCode from "http-status-codes";

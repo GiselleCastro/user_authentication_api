@@ -1,6 +1,5 @@
 import { db } from "../database/knex";
 import { v4 as uuid } from "uuid";
-import { handlerErrorDB } from "../utils/handlerErrorDB";
 import { UUID } from "../@types";
 import { BaseEntity } from "../config/BaseEntity";
 
@@ -13,12 +12,13 @@ export class UserRepository extends BaseEntity {
         email,
         passwordHash,
       })
-      .catch((error) =>
-        handlerErrorDB(this.createUser.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.createUser.name, error, {
           username,
           email,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.createUser.name);
+      });
   }
 
   async getUserById(
@@ -28,11 +28,12 @@ export class UserRepository extends BaseEntity {
       .select("id", "email", "passwordHash")
       .where("id", "=", userId)
       .then((result) => result[0])
-      .catch((error) =>
-        handlerErrorDB(this.getUserById.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.getUserById.name, error, {
           userId,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.getUserById.name);
+      });
   }
 
   async getUserByLogin(login: string): Promise<
@@ -50,9 +51,12 @@ export class UserRepository extends BaseEntity {
       .where(db.raw('LOWER("username")'), "=", login.toLowerCase())
       .orWhere(db.raw('LOWER("email")'), "=", login.toLowerCase())
       .then((result) => result[0])
-      .catch((error) =>
-        handlerErrorDB(this.getUserByLogin.name, error, this.logger),
-      );
+      .catch((error) => {
+        this.logger.error(this.getUserByLogin.name, error, {
+          login,
+        });
+        this.handlerError.unprocessableEntityError(this.getUserByLogin.name);
+      });
   }
 
   async getUserByUsernameOrEmail(
@@ -66,20 +70,27 @@ export class UserRepository extends BaseEntity {
       .where(db.raw('LOWER("username")'), "=", username.toLowerCase())
       .orWhere(db.raw('LOWER("email")'), "=", email.toLowerCase())
       .then((result) => result[0])
-      .catch((error) =>
-        handlerErrorDB(this.getUserByUsernameOrEmail.name, error, this.logger),
-      );
+      .catch((error) => {
+        this.logger.error(this.getUserByUsernameOrEmail.name, error, {
+          username,
+          email,
+        });
+        this.handlerError.unprocessableEntityError(
+          this.getUserByUsernameOrEmail.name,
+        );
+      });
   }
 
-  async deleteUser(userId: UUID): Promise<number> {
+  async deleteUser(userId: UUID) {
     return db("users")
       .where("id", "=", userId)
       .delete()
-      .catch((error) =>
-        handlerErrorDB(this.deleteUser.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.deleteUser.name, error, {
           userId,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.deleteUser.name);
+      });
   }
 
   async updatePassword(login: string, passwordHash: string) {
@@ -87,45 +98,48 @@ export class UserRepository extends BaseEntity {
       .where(db.raw('LOWER("username")'), "=", login.toLowerCase())
       .orWhere(db.raw('LOWER("email")'), "=", login.toLowerCase())
       .update("passwordHash", passwordHash)
-      .catch((error) =>
-        handlerErrorDB(this.updatePassword.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.updatePassword.name, error, {
           login,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.updatePassword.name);
+      });
   }
 
   async confirmEmail(email: string) {
     return db("users")
       .where(db.raw('LOWER("email")'), "=", email.toLowerCase())
       .update("confirmed", true)
-      .catch((error) =>
-        handlerErrorDB(this.confirmEmail.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.confirmEmail.name, error, {
           email,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.confirmEmail.name);
+      });
   }
 
-  async getRoleAndPermissions(
-    userId: UUID,
-  ): Promise<{ role: string; permissions: string[] } | null> {
-    const userAccessControl = await db("users_roles")
+  async getRoleAndPermissions(userId: UUID) {
+    return db("users_roles")
       .join("roles", "roles.id", "users_roles.role_id")
       .join("permissions_roles", "permissions_roles.role_id", "roles.id")
       .join("permissions", "permissions.id", "permissions_roles.permission_id")
       .select("role", "permission")
       .where("user_id", userId)
-      .then((result) => result)
-      .catch((error) =>
-        handlerErrorDB(this.getRoleAndPermissions.name, error, this.logger, {
+      .then((result) => {
+        if (!result.length) return;
+
+        return {
+          role: result[0].role,
+          permissions: result.map((i) => i.permission),
+        };
+      })
+      .catch((error) => {
+        this.logger.error(this.getRoleAndPermissions.name, error, {
           userId,
-        }),
-      );
-
-    if (!userAccessControl.length) return null;
-
-    return {
-      role: userAccessControl[0].role,
-      permissions: userAccessControl.map((i) => i.permission),
-    };
+        });
+        this.handlerError.unprocessableEntityError(
+          this.getRoleAndPermissions.name,
+        );
+      });
   }
 }

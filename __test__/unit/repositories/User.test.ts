@@ -2,7 +2,7 @@ import { createTracker, MockClient, Tracker } from "knex-mock-client";
 import { db } from "../../../src/database/knex";
 import { faker } from "@faker-js/faker/.";
 import { UserRepository } from "../../../src/repositories/User";
-import { UnprocessableEntityError } from "../../../src/utils/errors";
+import { UnprocessableEntityError } from "../../../src/config/BaseError";
 import { UUID } from "../../../src/@types";
 
 jest.mock("../../../src/database/knex", () => {

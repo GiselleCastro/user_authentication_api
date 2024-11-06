@@ -1,6 +1,5 @@
 import { db } from "../database/knex";
 import { BaseEntity } from "../config/BaseEntity";
-import { handlerErrorDB } from "../utils/handlerErrorDB";
 
 export class TokenToResetPasswordRepository extends BaseEntity {
   async saveToken(login: string, token: string) {
@@ -9,11 +8,12 @@ export class TokenToResetPasswordRepository extends BaseEntity {
         login,
         token,
       })
-      .catch((error) =>
-        handlerErrorDB(this.saveToken.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.saveToken.name, error, {
           login,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.saveToken.name);
+      });
   }
 
   async deleteToken(info: string) {
@@ -21,11 +21,12 @@ export class TokenToResetPasswordRepository extends BaseEntity {
       .where(db.raw('LOWER("login")'), "=", info.toLowerCase())
       .orWhere("token", "=", info)
       .delete()
-      .catch((error) =>
-        handlerErrorDB(this.deleteToken.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.deleteToken.name, error, {
           info,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.deleteToken.name);
+      });
   }
 
   async getLoginByToken(token: string) {
@@ -33,10 +34,11 @@ export class TokenToResetPasswordRepository extends BaseEntity {
       .select("login")
       .where("token", "=", token)
       .then((result) => result[0])
-      .catch((error) =>
-        handlerErrorDB(this.getLoginByToken.name, error, this.logger, {
+      .catch((error) => {
+        this.logger.error(this.getLoginByToken.name, error, {
           token,
-        }),
-      );
+        });
+        this.handlerError.unprocessableEntityError(this.getLoginByToken.name);
+      });
   }
 }

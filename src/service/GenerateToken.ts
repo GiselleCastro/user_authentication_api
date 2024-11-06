@@ -3,7 +3,7 @@ import type { SendEmailService } from "./SendEmail";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { constants } from "../config/constants";
-import { BadRequestError, UnauthorizedError } from "../utils/errors";
+import { BadRequestError, UnauthorizedError } from "../config/BaseError";
 import { TokenJSON, Authorization } from "../@types";
 import {
   PASSWORD_DO_NOT_MATCH,

@@ -4,7 +4,10 @@ import { SendEmailService } from "../../../src/service/SendEmail";
 import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker/.";
 import { UUID } from "../../../src/@types";
-import { BadRequestError, UnauthorizedError } from "../../../src/utils/errors";
+import {
+  BadRequestError,
+  UnauthorizedError,
+} from "../../../src/config/BaseError";
 import bcrypt from "bcrypt";
 
 jest.mock("bcrypt");

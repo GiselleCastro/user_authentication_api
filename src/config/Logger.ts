@@ -2,7 +2,7 @@ import winston from "winston";
 import { WintonConfig } from "./Winton.config";
 
 export class Logger {
-  private logger: winston.Logger;
+  private readonly logger: winston.Logger;
 
   constructor(functionName: string) {
     this.logger = new WintonConfig().createLogger(functionName);

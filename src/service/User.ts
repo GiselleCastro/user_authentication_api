@@ -8,7 +8,7 @@ import {
   BadRequestError,
   UnauthorizedError,
   UnprocessableEntityError,
-} from "../utils/errors";
+} from "../config/BaseError";
 import {
   TOKEN_ALREADY_USED,
   NON_EXISTENT_USER,

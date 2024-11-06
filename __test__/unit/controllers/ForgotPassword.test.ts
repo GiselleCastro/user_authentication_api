@@ -2,7 +2,7 @@ import type { FastifyInstance } from "fastify/types/instance";
 import { UserService } from "../../../src/service/User";
 import { buildServer } from "../../../server";
 import { faker } from "@faker-js/faker/.";
-import { BadRequestError } from "../../../src/utils/errors";
+import { BadRequestError } from "../../../src/config/BaseError";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";
 import HttpStatusCode from "http-status-codes";
 

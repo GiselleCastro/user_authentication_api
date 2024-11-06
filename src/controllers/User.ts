@@ -1,7 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import type { UserService } from "../service/User";
 import { BaseEntity } from "../config/BaseEntity";
-import { handlerErrorRequest } from "../utils/handlerErrorRequest";
 import * as types from "../@types";
 import HttpStatusCode from "http-status-codes";
 
@@ -27,7 +26,7 @@ export class UserController extends BaseEntity {
       );
       return reply.code(HttpStatusCode.CREATED).send();
     } catch (error) {
-      handlerErrorRequest(error, this.logger, reply);
+      this.handlerErrorController(error, reply);
     }
   };
 
@@ -44,7 +43,7 @@ export class UserController extends BaseEntity {
 
       return reply.code(HttpStatusCode.NO_CONTENT).send();
     } catch (error) {
-      handlerErrorRequest(error, this.logger, reply, { error });
+      this.handlerErrorController(error, reply, { error });
     }
   };
 
@@ -63,7 +62,7 @@ export class UserController extends BaseEntity {
 
       return reply.code(HttpStatusCode.NO_CONTENT).send();
     } catch (error) {
-      handlerErrorRequest(error, this.logger, reply, { error });
+      this.handlerErrorController(error, reply, { error });
     }
   };
 
@@ -80,7 +79,7 @@ export class UserController extends BaseEntity {
 
       return reply.code(HttpStatusCode.NO_CONTENT).send();
     } catch (error) {
-      handlerErrorRequest(error, this.logger, reply);
+      this.handlerErrorController(error, reply);
     }
   };
 
@@ -103,7 +102,7 @@ export class UserController extends BaseEntity {
       );
       return reply.code(HttpStatusCode.NO_CONTENT).send();
     } catch (error) {
-      handlerErrorRequest(error, this.logger, reply, { error });
+      this.handlerErrorController(error, reply, { error });
     }
   };
 }

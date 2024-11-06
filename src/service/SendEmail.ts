@@ -5,7 +5,7 @@ import path from "path";
 import randomstring from "randomstring";
 import { constants } from "../config/constants";
 import { BaseEntity } from "../config/BaseEntity";
-import { BadRequestError } from "../utils/errors";
+import { BadRequestError } from "../config/BaseError";
 import { google } from "googleapis";
 import { EMAIL_NOT_SENT, EMAIL_TEMPLATE_NOT_RENDERED } from "../utils/messages";
 

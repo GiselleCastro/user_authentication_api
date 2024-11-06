@@ -1,6 +1,6 @@
 import { SendEmailService } from "../../../src/service/SendEmail";
 import { faker } from "@faker-js/faker/.";
-import { BadRequestError } from "../../../src/utils/errors";
+import { BadRequestError } from "../../../src/config/BaseError";
 import jwt from "jsonwebtoken";
 import ejs from "ejs";
 
