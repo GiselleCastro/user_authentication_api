@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table width="100%">
+        <tr>
+            <td text-align="center">
+                <table width="600">
+                    <tr
+                        style="background: linear-gradient(127deg, rgba(3,0,48,0.6236695361738445) 0%, rgba(0,172,207,0.7217087518601191) 100%);">
+                        <td style="font-family: Times New Roman, Times, serif; font-size: 22px; text-align: center;">
+                            <p style="color: white; text-decoration: none;">Dear <%= username %> (<%= email %>),</p>
+                            <p style="color: white;">
+                                Thank you for signing up with us! To complete your registration, please confirm your
+                                email address by clicking on the button below:
+                            </p>
+                            <p style="color: white;">This link expires in <%= expiresInMinutes %> minutes.</p>
+                            <p style="color: white;"> If you did not create an account, please ignore this message.</p>
+                            <button type="button"
+                                style="background-color:rgba(5, 7, 112, 0.822); width: 170px; height: 40px; border-radius: 8px;"><a
+                                    href="<%= link %>"
+                                    style="text-decoration: none; font-size: 16px; font-weight: 700; letter-spacing: 0.5px ;color: beige;">Confirm
+                                    My Email</a></button>
+                            <p>Best regards.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
