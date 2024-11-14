@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify/types/instance";
 import { CreateUserService } from "../../../src/service/CreateUser";
-import { buildServer } from "../../../server";
+import { buildServer } from "../../../src/server";
 import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";

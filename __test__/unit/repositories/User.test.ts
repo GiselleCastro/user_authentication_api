@@ -1,6 +1,6 @@
 import { createTracker, MockClient, Tracker } from "knex-mock-client";
 import { db } from "../../../src/database/knex";
-import { faker } from "@faker-js/faker/.";
+import { faker } from "@faker-js/faker";
 import { UserRepository } from "../../../src/repositories/User";
 import { UnprocessableEntityError } from "../../../src/config/BaseError";
 import { UUID } from "../../../src/@types";
@@ -21,6 +21,7 @@ describe("UserRepository", () => {
 
   afterEach(() => {
     tracker.reset();
+    tracker.resetHandlers();
   });
 
   describe("createUser", () => {
@@ -41,15 +42,13 @@ describe("UserRepository", () => {
 
       expect(data).toBeUndefined();
       expect(insertHistory).toHaveLength(1);
-      expect(insertHistory[0].method).toEqual("insert");
-      expect(insertHistory[0].bindings[0]).toEqual(email);
-      expect(insertHistory[0].bindings[2]).toEqual(passwordHash);
-      expect(insertHistory[0].bindings[3]).toEqual(username);
-
-      tracker.resetHandlers();
+      expect(insertHistory[0].method).toBe("insert");
+      expect(insertHistory[0].bindings[0]).toBe(email);
+      expect(insertHistory[0].bindings[2]).toBe(passwordHash);
+      expect(insertHistory[0].bindings[3]).toBe(username);
     });
 
-    it("Error to create user", async () => {
+    it("should return error if not insert user data into table", async () => {
       const username = faker.person.firstName();
       const email = faker.internet.email();
       const passwordHash = faker.string.alphanumeric(10);
@@ -59,8 +58,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().createUser(username, email, passwordHash),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 
@@ -84,12 +81,10 @@ describe("UserRepository", () => {
         passwordHash,
       });
 
-      expect(selectHistory[0].method).toEqual("select");
-
-      tracker.resetHandlers();
+      expect(selectHistory[0].method).toBe("select");
     });
 
-    it("Error to find user by id", async () => {
+    it("should return error if it cannot find user by id", async () => {
       const userId = faker.string.uuid() as unknown as UUID;
 
       tracker.on.select("users").simulateError("Connection lost");
@@ -97,8 +92,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().getUserById(userId),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 
@@ -126,12 +119,10 @@ describe("UserRepository", () => {
         passwordHash,
       });
 
-      expect(selectHistory[0].method).toEqual("select");
-
-      tracker.resetHandlers();
+      expect(selectHistory[0].method).toBe("select");
     });
 
-    it("Error to find user by login", async () => {
+    it("should return error if it cannot find user by login", async () => {
       const username = faker.person.firstName();
 
       tracker.on.select("users").simulateError("Connection lost");
@@ -139,8 +130,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().getUserByLogin(username),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 
@@ -161,12 +150,10 @@ describe("UserRepository", () => {
 
       expect(data).toEqual({ username, email, confirmed });
 
-      expect(selectHistory[0].method).toEqual("select");
-
-      tracker.resetHandlers();
+      expect(selectHistory[0].method).toBe("select");
     });
 
-    it("Error to find user", async () => {
+    it("should return error if it cannot find user by username or email", async () => {
       const username = faker.person.firstName();
       const email = faker.internet.email();
 
@@ -175,8 +162,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().getUserByUsernameOrEmail(username, email),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 
@@ -192,12 +177,10 @@ describe("UserRepository", () => {
 
       expect(data).toBe(1);
 
-      expect(deleteHistory[0].method).toEqual("delete");
-
-      tracker.resetHandlers();
+      expect(deleteHistory[0].method).toBe("delete");
     });
 
-    it("Error to delete user by id", async () => {
+    it("should return error if it cannot delete user", async () => {
       const userId = faker.string.uuid() as unknown as UUID;
 
       tracker.on.delete("users").simulateError("Connection lost");
@@ -205,8 +188,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().deleteUser(userId),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 
@@ -226,11 +207,9 @@ describe("UserRepository", () => {
 
       expect(data).toEqual([]);
       expect(updateHistory[0].method).toBe("update");
-
-      tracker.resetHandlers();
     });
 
-    it("Error to update password", async () => {
+    it("should return error if it cannot update password", async () => {
       const email = faker.internet.email();
       const passwordHash = faker.string.alphanumeric(10);
 
@@ -239,8 +218,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().updatePassword(email, passwordHash),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 
@@ -256,11 +233,9 @@ describe("UserRepository", () => {
 
       expect(data).toEqual([]);
       expect(updateHistory[0].method).toBe("update");
-
-      tracker.resetHandlers();
     });
 
-    it("Error to confirm email", async () => {
+    it("should return error if it cannot confirm email", async () => {
       const email = faker.internet.email();
 
       tracker.on.update("users").simulateError("Connection lost");
@@ -268,8 +243,6 @@ describe("UserRepository", () => {
       await expect(
         new UserRepository().confirmEmail(email),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
-
-      tracker.resetHandlers();
     });
   });
 });

@@ -1,9 +1,9 @@
-export const createUser = {
-  tags: ["User"],
+import type { FastifySchema } from "fastify/types/schema";
+
+export const createUser: FastifySchema = {
+  tags: ["User register"],
   body: {
     type: "object",
-    required: ["username", "email", "password", "confirmPassword"],
-    additionalProperties: false,
     properties: {
       username: {
         type: "string",
@@ -18,6 +18,8 @@ export const createUser = {
         type: "string",
       },
     },
+    required: ["username", "email", "password", "confirmPassword"],
+    additionalProperties: false,
   },
   summary: "User register",
   response: {
@@ -56,8 +58,8 @@ export const createUser = {
   },
 };
 
-export const login = {
-  tags: ["User"],
+export const login: FastifySchema = {
+  tags: ["User login"],
   body: {
     type: "object",
     required: ["login", "password"],
@@ -77,7 +79,10 @@ export const login = {
       description: "Token generated successfully",
       type: "object",
       properties: {
-        token: {
+        accessToken: {
+          type: "string",
+        },
+        refreshToken: {
           type: "string",
         },
       },
@@ -112,8 +117,8 @@ export const login = {
   },
 };
 
-export const forgotPassword = {
-  tags: ["User"],
+export const forgotPassword: FastifySchema = {
+  tags: ["Password recovery"],
   body: {
     type: "object",
     required: ["login"],
@@ -147,8 +152,8 @@ export const forgotPassword = {
   },
 };
 
-export const resetPassword = {
-  tags: ["User"],
+export const resetPassword: FastifySchema = {
+  tags: ["Password recovery"],
   querystring: {
     type: "object",
     required: ["token"],
@@ -156,6 +161,7 @@ export const resetPassword = {
     properties: {
       token: {
         type: "string",
+        description: "token sent by email",
       },
     },
   },
@@ -220,8 +226,8 @@ export const resetPassword = {
   },
 };
 
-export const confirmEmail = {
-  tags: ["User"],
+export const confirmEmail: FastifySchema = {
+  tags: ["User register"],
   querystring: {
     type: "object",
     required: ["token"],
@@ -267,8 +273,9 @@ export const confirmEmail = {
   },
 };
 
-export const changePassword = {
-  tags: ["User"],
+export const changePassword: FastifySchema = {
+  tags: ["User logged in"],
+  security: [{ authorization: [] }],
   body: {
     type: "object",
     required: ["password", "newPassword", "confirmNewPassword"],

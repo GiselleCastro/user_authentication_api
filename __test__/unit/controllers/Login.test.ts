@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify/types/instance";
 import { SignInService } from "../../../src/service/SignIn";
-import { buildServer } from "../../../server";
+import { buildServer } from "../../../src/server";
 import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
 import { ERROR_VALIDATION } from "../../../src/utils/messages";
@@ -25,10 +25,15 @@ describe("POST /login", () => {
       password: faker.internet.password(),
     };
 
-    const tokenMock = faker.string.alphanumeric(30);
+    const accessTokenMock = faker.string.alphanumeric(30);
+    const refreshTokenMock = faker.string.alphanumeric(30);
+
     const generateTokenServiceSpy = jest
       .spyOn(SignInService.prototype, "execute")
-      .mockResolvedValue(tokenMock);
+      .mockResolvedValue({
+        accessToken: accessTokenMock,
+        refreshToken: refreshTokenMock,
+      });
 
     const response = await serverStub.inject({
       method: "POST",
@@ -40,7 +45,10 @@ describe("POST /login", () => {
     expect(response.headers["content-type"]).toBe(
       "application/json; charset=utf-8",
     );
-    expect(response.json()).toEqual({ token: tokenMock });
+    expect(response.json()).toEqual({
+      accessToken: accessTokenMock,
+      refreshToken: refreshTokenMock,
+    });
     expect(generateTokenServiceSpy).toHaveBeenCalledWith(
       ...Object.values(loginInput),
     );

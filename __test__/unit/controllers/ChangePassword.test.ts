@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify/types/instance";
 import { ChangePassowrdService } from "../../../src/service/ChangePassword";
 import { CheckAutheticationMiddleware } from "../../../src/middleware/CheckAuthetication";
-import { buildServer } from "../../../server";
+import { buildServer } from "../../../src/server";
 import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
 import { UUID } from "../../../src/@types";
@@ -22,7 +22,7 @@ describe("PATCH /my-account/change-password", () => {
     await serverStub.close();
   });
 
-  it.skip("Password updated successfully", async () => {
+  it("Password updated successfully", async () => {
     const tokenQuery = faker.string.alphanumeric(10);
     const changePasswordInput = {
       password: faker.internet.password(),
@@ -39,7 +39,7 @@ describe("PATCH /my-account/change-password", () => {
       url: "/my-account/change-password",
       payload: changePasswordInput,
       headers: {
-        Authorization: `Bearer ${tokenQuery}`,
+        authorization: `Bearer ${tokenQuery}`,
       },
     });
 
@@ -47,7 +47,7 @@ describe("PATCH /my-account/change-password", () => {
       .spyOn(CheckAutheticationMiddleware.prototype, "handle")
       .mockImplementationOnce(async (request) => {
         request.access = {
-          userId,
+          id: userId,
           role: "",
           permissions: [""],
         };
@@ -82,7 +82,7 @@ describe("PATCH /my-account/change-password", () => {
       .spyOn(CheckAutheticationMiddleware.prototype, "handle")
       .mockImplementationOnce(async (request) => {
         request.access = {
-          userId,
+          id: userId,
           role: "",
           permissions: [""],
         };
@@ -98,7 +98,7 @@ describe("PATCH /my-account/change-password", () => {
       url: "/my-account/change-password",
       payload: changePasswordInput,
       headers: {
-        Authorization: `Bearer ${tokenQuery}`,
+        authorization: `Bearer ${tokenQuery}`,
       },
     });
 
@@ -130,7 +130,7 @@ describe("PATCH /my-account/change-password", () => {
       .spyOn(CheckAutheticationMiddleware.prototype, "handle")
       .mockImplementationOnce(async (request) => {
         request.access = {
-          userId,
+          id: userId,
           role: "",
           permissions: [""],
         };
@@ -141,7 +141,7 @@ describe("PATCH /my-account/change-password", () => {
       url: "/my-account/change-password",
       payload: changePasswordInput,
       headers: {
-        Authorization: `Bearer ${tokenQuery}`,
+        authorization: `Bearer ${tokenQuery}`,
       },
     });
 

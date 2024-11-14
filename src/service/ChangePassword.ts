@@ -22,7 +22,7 @@ export class ChangePassowrdService {
 
     const checkPassword = await bcrypt.compare(
       password,
-      userRegister.passwordHash,
+      userRegister.password_hash,
     );
 
     if (checkPassword) {

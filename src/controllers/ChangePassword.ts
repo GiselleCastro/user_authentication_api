@@ -16,7 +16,7 @@ export class ChangePasswordController extends BaseEntity {
       types.Access,
     reply: FastifyReply,
   ) => {
-    const userId = request.access?.userId as types.UUID;
+    const userId = request.access?.id as types.UUID;
     const { password, newPassword, confirmNewPassword } = request.body;
 
     try {

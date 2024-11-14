@@ -10,7 +10,7 @@ export class UserRepository extends BaseEntity {
         id: uuid(),
         username,
         email,
-        passwordHash,
+        password_hash: passwordHash,
       })
       .catch((error) => {
         this.logger.error(this.createUser.name, error, {
@@ -23,9 +23,12 @@ export class UserRepository extends BaseEntity {
 
   async getUserById(
     userId: UUID,
-  ): Promise<{ id: UUID; email: string; passwordHash: string } | undefined> {
+  ): Promise<
+    | { id: UUID; email: string; confirmed: boolean; password_hash: string }
+    | undefined
+  > {
     return db("users")
-      .select("id", "email", "passwordHash")
+      .select("id", "email", "confirmed", "password_hash")
       .where("id", "=", userId)
       .then((result) => result[0])
       .catch((error) => {
@@ -42,12 +45,12 @@ export class UserRepository extends BaseEntity {
         username: string;
         email: string;
         confirmed: boolean;
-        passwordHash: string;
+        password_hash: string;
       }
     | undefined
   > {
     return db("users")
-      .select("id", "username", "email", "confirmed", "passwordHash")
+      .select("id", "username", "email", "confirmed", "password_hash")
       .where(db.raw('LOWER("username")'), "=", login.toLowerCase())
       .orWhere(db.raw('LOWER("email")'), "=", login.toLowerCase())
       .then((result) => result[0])
@@ -97,7 +100,7 @@ export class UserRepository extends BaseEntity {
     return db("users")
       .where(db.raw('LOWER("username")'), "=", login.toLowerCase())
       .orWhere(db.raw('LOWER("email")'), "=", login.toLowerCase())
-      .update("passwordHash", passwordHash)
+      .update("password_hash", passwordHash)
       .catch((error) => {
         this.logger.error(this.updatePassword.name, error, {
           login,

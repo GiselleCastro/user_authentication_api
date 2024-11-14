@@ -1,74 +1,90 @@
-import { SendEmailService } from "../../../src/config/EmailSending.config";
 import { SendEmailResetPasswordService } from "../../../src/service/SendEmailResetPassword";
-import { TokenToResetPasswordRepository } from "../../../src/repositories/TokenToResetPassword";
+import { SendEmailService } from "../../../src/config/EmailSending.config";
+import { ResetPasswordRepository } from "../../../src/repositories/ResetPassword";
 import { UserRepository } from "../../../src/repositories/User";
 import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
-import jwt from "jsonwebtoken";
+import { createToken } from "../../../src/utils/createToken";
+import { UUID } from "../../../src/@types";
 import ejs from "ejs";
 
 jest.mock("ejs");
-jest.mock("jsonwebtoken");
+jest.mock("../../../src/config/EmailSending.config");
+jest.mock("../../../src/repositories/ResetPassword");
 jest.mock("../../../src/repositories/User");
-jest.mock("../../../src/repositories/TokenToResetPassword");
+jest.mock("../../../src/utils/createToken");
 
 const makeSut = () => {
   const sendEmailServiceStub = new SendEmailService();
-  const tokenToResetPasswordRepositoryStub =
-    new TokenToResetPasswordRepository();
+  const resetPasswordRepositoryStub = new ResetPasswordRepository();
   const userRepositoryStub = new UserRepository();
 
   const sut = new SendEmailResetPasswordService(
     sendEmailServiceStub,
-    tokenToResetPasswordRepositoryStub,
+    resetPasswordRepositoryStub,
     userRepositoryStub,
   ) as jest.Mocked<SendEmailResetPasswordService>;
   return {
     sut,
     sendEmailServiceStub,
-    tokenToResetPasswordRepositoryStub,
+    resetPasswordRepositoryStub,
     userRepositoryStub,
   };
 };
 
 describe("SendEmailResetPasswordService", () => {
-  it.skip("Email to reset password sent successfully", async () => {
-    const { sut } = makeSut();
+  it("Email to reset password sent successfully", async () => {
+    const {
+      sut,
+      userRepositoryStub,
+      resetPasswordRepositoryStub,
+      sendEmailServiceStub,
+    } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(null, tokenMock);
-      },
+    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce({
+      id: userId,
+      username: usernameMock,
+      email: emailMock,
+    });
+
+    (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
+
+    (sendEmailServiceStub.sendEmail as jest.Mock).mockResolvedValueOnce(
+      async () => {},
     );
 
-    (ejs.renderFile as jest.Mock).mockResolvedValue(undefined);
-
-    //jest.spyOn(sut, "execute").mockResolvedValue("any");
+    (ejs.renderFile as jest.Mock).mockResolvedValueOnce(async () => {});
 
     expect(await sut.execute(usernameMock)).toBeUndefined();
     expect(ejs.renderFile).toHaveBeenCalled();
+    expect(resetPasswordRepositoryStub.deleteToken).toHaveBeenCalled();
+    expect(resetPasswordRepositoryStub.saveToken).toHaveBeenCalled();
   });
 
-  it.skip("should return bad request error if there is an error sending email", async () => {
-    const { sut, sendEmailServiceStub } = makeSut();
+  it("should return bad request error if there is an error sending email", async () => {
+    const { sut, userRepositoryStub, sendEmailServiceStub } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(null, tokenMock);
-      },
-    );
+    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce({
+      id: userId,
+      username: usernameMock,
+      email: emailMock,
+    });
+
+    (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
 
     (ejs.renderFile as jest.Mock).mockResolvedValue("any");
 
-    jest
-      .spyOn(sendEmailServiceStub, "sendEmail")
-      .mockRejectedValueOnce(async () => new BadRequestError("error"));
+    (sendEmailServiceStub.sendEmail as jest.Mock).mockRejectedValueOnce(
+      async () => new BadRequestError("error"),
+    );
 
     await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
       BadRequestError,
@@ -77,18 +93,21 @@ describe("SendEmailResetPasswordService", () => {
   });
 
   it("should return bad request error if there is an error rendering email template", async () => {
-    const { sut } = makeSut();
+    const { sut, userRepositoryStub } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(null, tokenMock);
-      },
-    );
+    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce({
+      id: userId,
+      username: usernameMock,
+      email: emailMock,
+    });
 
-    (ejs.renderFile as jest.Mock).mockRejectedValueOnce("any");
+    (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
+
+    (ejs.renderFile as jest.Mock).mockRejectedValueOnce(() => {});
 
     await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
       BadRequestError,
@@ -96,14 +115,33 @@ describe("SendEmailResetPasswordService", () => {
   });
 
   it("should return bad request error if there is an error generating token", async () => {
-    const { sut } = makeSut();
+    const { sut, userRepositoryStub } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(new BadRequestError("error"), null);
-      },
+    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce({
+      id: userId,
+      username: usernameMock,
+      email: emailMock,
+    });
+
+    (createToken as jest.Mock).mockRejectedValueOnce(
+      new BadRequestError("error"),
+    );
+
+    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
+      BadRequestError,
+    );
+    expect(ejs.render).not.toHaveBeenCalled();
+  });
+
+  it("should return bad request error if non existent user", async () => {
+    const { sut, userRepositoryStub } = makeSut();
+    const usernameMock = faker.person.firstName();
+
+    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce(
+      undefined,
     );
 
     await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(

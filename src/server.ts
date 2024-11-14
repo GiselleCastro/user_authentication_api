@@ -1,9 +1,9 @@
 import type { FastifyInstance } from "fastify";
-import { publicRoutes } from "./src/routes/public.routes";
-import { privateRoutes } from "./src/routes/private.routes";
-import { constants } from "./src/config/constants";
-import { swaggerOptions, swaggerUiOptions } from "./swaggerOptions";
-import { Environment } from "./src/enum";
+import { publicRoutes } from "./routes/public.routes";
+import { privateRoutes } from "./routes/private.routes";
+import { constants } from "./config/constants";
+import { swaggerOptions, swaggerUiOptions } from "../swaggerOptions";
+import { Environment } from "./enum";
 import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";

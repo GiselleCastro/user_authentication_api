@@ -1,79 +1,80 @@
 import { ResetPasswordService } from "../../../src/service/ResetPassword";
 import { UserRepository } from "../../../src/repositories/User";
-import { TokenToResetPasswordRepository } from "../../../src/repositories/TokenToResetPassword";
-import jwt from "jsonwebtoken";
+import { ResetPasswordRepository } from "../../../src/repositories/ResetPassword";
 import { faker } from "@faker-js/faker";
+import { validationToken } from "../../../src/utils/validationToken";
 import {
   BadRequestError,
   UnauthorizedError,
   UnprocessableEntityError,
 } from "../../../src/config/BaseError";
+import { UUID } from "../../../src/@types";
 
-jest.mock("jsonwebtoken");
 jest.mock("../../../src/repositories/User");
-jest.mock("../../../src/repositories/TokenToResetPassword");
+jest.mock("../../../src/repositories/ResetPassword");
+jest.mock("../../../src/utils/validationToken");
 
 const makeSut = () => {
   const userRepositoryStub =
     new UserRepository() as jest.Mocked<UserRepository>;
-  const tokenToResetPasswordRepositoryStub =
-    new TokenToResetPasswordRepository() as jest.Mocked<TokenToResetPasswordRepository>;
+  const resetPasswordRepositoryStub =
+    new ResetPasswordRepository() as jest.Mocked<ResetPasswordRepository>;
   const sut = new ResetPasswordService(
     userRepositoryStub,
-    tokenToResetPasswordRepositoryStub,
+    resetPasswordRepositoryStub,
   );
 
   return {
     sut,
     userRepositoryStub,
-    tokenToResetPasswordRepositoryStub,
+    resetPasswordRepositoryStub,
   };
 };
 
 describe("ResetPasswordService", () => {
   it("Password updated successfully", async () => {
-    const { sut, userRepositoryStub, tokenToResetPasswordRepositoryStub } =
-      makeSut();
+    const { sut, userRepositoryStub, resetPasswordRepositoryStub } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const passwordMock = "A@#z123457890";
     const tokenMock = faker.string.alphanumeric(10);
     const loginMock = faker.internet.email();
 
-    (jwt.verify as jest.Mock).mockImplementationOnce((token, secret, cb) => {});
+    (validationToken as jest.Mock).mockResolvedValue({ id: userId });
 
-    tokenToResetPasswordRepositoryStub.getLoginByToken.mockResolvedValueOnce({
+    resetPasswordRepositoryStub.getTokenAndLoginByUserId.mockResolvedValueOnce({
+      token: tokenMock,
       login: loginMock,
     });
 
     userRepositoryStub.updatePassword.mockImplementationOnce(async () => []);
 
-    tokenToResetPasswordRepositoryStub.deleteToken.mockImplementation(
-      async () => {
-        return 1;
-      },
-    );
+    resetPasswordRepositoryStub.deleteToken.mockImplementationOnce(async () => {
+      return 1;
+    });
 
     expect(
       await sut.execute(tokenMock, passwordMock, passwordMock),
     ).toBeUndefined();
 
     expect(
-      tokenToResetPasswordRepositoryStub.getLoginByToken,
-    ).toHaveBeenCalledWith(tokenMock);
+      resetPasswordRepositoryStub.getTokenAndLoginByUserId,
+    ).toHaveBeenCalledWith(userId);
     expect(userRepositoryStub.updatePassword).toHaveBeenCalled();
-    expect(tokenToResetPasswordRepositoryStub.deleteToken).toHaveBeenCalledWith(
-      tokenMock,
+    expect(resetPasswordRepositoryStub.deleteToken).toHaveBeenCalledWith(
+      userId,
     );
   });
 
   it("should return unprocessable entity error if not found to get for login by token", async () => {
-    const { sut, tokenToResetPasswordRepositoryStub } = makeSut();
+    const { sut, resetPasswordRepositoryStub } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const passwordMock = "A@#z123457890";
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.verify as jest.Mock).mockImplementationOnce((token, secret, cb) => {});
+    (validationToken as jest.Mock).mockResolvedValueOnce({ id: userId });
 
-    tokenToResetPasswordRepositoryStub.getLoginByToken.mockImplementationOnce(
-      async () => ({}),
+    resetPasswordRepositoryStub.getTokenAndLoginByUserId.mockImplementationOnce(
+      async () => undefined,
     );
 
     await expect(
@@ -81,18 +82,21 @@ describe("ResetPasswordService", () => {
     ).rejects.toBeInstanceOf(UnprocessableEntityError);
 
     expect(
-      tokenToResetPasswordRepositoryStub.getLoginByToken,
-    ).toHaveBeenCalledWith(tokenMock);
+      resetPasswordRepositoryStub.getTokenAndLoginByUserId,
+    ).toHaveBeenCalledWith(userId);
   });
 
-  it("should return bad request error if passwords do not match", async () => {
-    const { sut, tokenToResetPasswordRepositoryStub } = makeSut();
+  it("should return bad request if there is no id property in the token", async () => {
+    const { sut, resetPasswordRepositoryStub } = makeSut();
+    const userId = faker.string.uuid() as unknown as UUID;
     const loginMock = faker.internet.email();
+    const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.verify as jest.Mock).mockImplementationOnce((token, secret, cb) => {});
+    (validationToken as jest.Mock).mockResolvedValue({ other: "" });
 
-    tokenToResetPasswordRepositoryStub.getLoginByToken.mockResolvedValueOnce({
+    resetPasswordRepositoryStub.getTokenAndLoginByUserId.mockResolvedValueOnce({
       login: loginMock,
+      token: tokenMock,
     });
 
     await expect(
@@ -101,15 +105,15 @@ describe("ResetPasswordService", () => {
         faker.internet.password(),
         faker.internet.password(),
       ),
-    ).rejects.toBeInstanceOf(BadRequestError);
+    ).rejects.toBeInstanceOf(UnauthorizedError);
   });
 
   it("should return unauthorized error for invalid token", async () => {
     const { sut } = makeSut();
 
-    (jwt.verify as jest.Mock).mockImplementationOnce((token, secret, cb) => {
-      cb(new UnauthorizedError("error"));
-    });
+    (validationToken as jest.Mock).mockRejectedValueOnce(
+      new UnauthorizedError("error"),
+    );
 
     expect(
       sut.execute(

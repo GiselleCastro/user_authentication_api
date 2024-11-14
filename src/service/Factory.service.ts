@@ -1,5 +1,6 @@
 import { UserRepository } from "../repositories/User";
-import { TokenToResetPasswordRepository } from "../repositories/TokenToResetPassword";
+import { ResetPasswordRepository } from "../repositories/ResetPassword";
+import { RefreshTokenRepository } from "../repositories/RefreshToken";
 import { SendEmailService } from "../config/EmailSending.config";
 
 import { ChangePassowrdService } from "./ChangePassword";
@@ -10,6 +11,7 @@ import { SignInService } from "./SignIn";
 import { ResetPasswordService } from "./ResetPassword";
 import { SendEmailConfirmEmailService } from "./SendEmailConfirmEmail";
 import { SendEmailResetPasswordService } from "./SendEmailResetPassword";
+import { GenerateRefreshTokenAndAccessTokenService } from "./GenerateRefreshTokenAndAccessToken";
 
 export class ChangePassowrdServiceFactory {
   static make(): ChangePassowrdService {
@@ -41,23 +43,37 @@ export class DeleteUserServiceFactory {
   }
 }
 
+export class GenerateRefreshTokenAndAccessTokenServiceFactory {
+  static make(): GenerateRefreshTokenAndAccessTokenService {
+    const userRepository = new UserRepository();
+    const refreshTokenRepository = new RefreshTokenRepository();
+    return new GenerateRefreshTokenAndAccessTokenService(
+      userRepository,
+      refreshTokenRepository,
+    );
+  }
+}
+
 export class SignInServiceFactory {
   static make(): SignInService {
     const userRepository = new UserRepository();
+    const generateRefreshTokenAndAccessTokenService =
+      GenerateRefreshTokenAndAccessTokenServiceFactory.make();
     const sendEmailConfirmEmailService =
       SendEmailConfirmEmailServiceFactory.make();
-    return new SignInService(userRepository, sendEmailConfirmEmailService);
+    return new SignInService(
+      userRepository,
+      generateRefreshTokenAndAccessTokenService,
+      sendEmailConfirmEmailService,
+    );
   }
 }
 
 export class ResetPasswordServiceFactory {
   static make(): ResetPasswordService {
     const userRepository = new UserRepository();
-    const tokenToResetPasswordRepository = new TokenToResetPasswordRepository();
-    return new ResetPasswordService(
-      userRepository,
-      tokenToResetPasswordRepository,
-    );
+    const resetPasswordRepository = new ResetPasswordRepository();
+    return new ResetPasswordService(userRepository, resetPasswordRepository);
   }
 }
 export class SendEmailConfirmEmailServiceFactory {
@@ -69,11 +85,11 @@ export class SendEmailConfirmEmailServiceFactory {
 export class SendEmailResetPasswordServiceFactory {
   static make(): SendEmailResetPasswordService {
     const sendEmailService = new SendEmailService();
-    const tokenToResetPasswordRepository = new TokenToResetPasswordRepository();
+    const resetPasswordRepository = new ResetPasswordRepository();
     const userRepository = new UserRepository();
     return new SendEmailResetPasswordService(
       sendEmailService,
-      tokenToResetPasswordRepository,
+      resetPasswordRepository,
       userRepository,
     );
   }

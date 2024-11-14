@@ -1,10 +1,12 @@
 import { db } from "../database/knex";
 import { BaseEntity } from "../config/BaseEntity";
+import { UUID } from "../@types";
 
-export class TokenToResetPasswordRepository extends BaseEntity {
-  async saveToken(login: string, token: string) {
+export class ResetPasswordRepository extends BaseEntity {
+  async saveToken(userId: UUID, login: string, token: string) {
     return db("password_resets")
       .insert({
+        user_id: userId,
         login,
         token,
       })
@@ -16,29 +18,32 @@ export class TokenToResetPasswordRepository extends BaseEntity {
       });
   }
 
-  async deleteToken(info: string) {
+  async deleteToken(userId: UUID) {
     return db("password_resets")
-      .where(db.raw('LOWER("login")'), "=", info.toLowerCase())
-      .orWhere("token", "=", info)
+      .where("user_id", "=", userId)
       .delete()
       .catch((error) => {
         this.logger.error(this.deleteToken.name, error, {
-          info,
+          userId,
         });
         this.handlerError.unprocessableEntityError(this.deleteToken.name);
       });
   }
 
-  async getLoginByToken(token: string) {
+  async getTokenAndLoginByUserId(
+    userId: UUID,
+  ): Promise<{ token: string; login: string } | undefined> {
     return db("password_resets")
-      .select("login")
-      .where("token", "=", token)
+      .select("token", "login")
+      .where("user_id", "=", userId)
       .then((result) => result[0])
       .catch((error) => {
-        this.logger.error(this.getLoginByToken.name, error, {
-          token,
+        this.logger.error(this.getTokenAndLoginByUserId.name, error, {
+          userId,
         });
-        this.handlerError.unprocessableEntityError(this.getLoginByToken.name);
+        this.handlerError.unprocessableEntityError(
+          this.getTokenAndLoginByUserId.name,
+        );
       });
   }
 }

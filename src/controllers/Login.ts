@@ -5,7 +5,7 @@ import { BaseEntity } from "../config/BaseEntity";
 import HttpStatusCode from "http-status-codes";
 
 export class LoginController extends BaseEntity {
-  constructor(private readonly generateTokenService: SignInService) {
+  constructor(private readonly signInService: SignInService) {
     super();
   }
   handler = async (
@@ -17,8 +17,8 @@ export class LoginController extends BaseEntity {
     const { login, password } = request.body;
 
     try {
-      const token = await this.generateTokenService.execute(login, password);
-      return reply.code(HttpStatusCode.OK).send({ token });
+      const token = await this.signInService.execute(login, password);
+      return reply.code(HttpStatusCode.OK).send(token);
     } catch (error) {
       this.handlerErrorController(error, reply);
     }

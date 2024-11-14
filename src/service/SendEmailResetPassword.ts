@@ -3,7 +3,7 @@ import ejs from "ejs";
 import path from "path";
 import randomstring from "randomstring";
 import { SendEmailService } from "../config/EmailSending.config";
-import { TokenToResetPasswordRepository } from "../repositories/TokenToResetPassword";
+import { ResetPasswordRepository } from "../repositories/ResetPassword";
 import { UserRepository } from "../repositories/User";
 import { constants } from "../config/constants";
 import { BaseEntity } from "../config/BaseEntity";
@@ -14,6 +14,7 @@ import {
   EMAIL_TEMPLATE_NOT_RENDERED,
   NON_EXISTENT_USER,
 } from "../utils/messages";
+import { UUID } from "../@types";
 
 const { SECRET_FORGET_PASSWORD, EXPIRES_IN_TOKEN_RESET_PASSWORD, BASE_URL } =
   constants;
@@ -21,7 +22,7 @@ const { SECRET_FORGET_PASSWORD, EXPIRES_IN_TOKEN_RESET_PASSWORD, BASE_URL } =
 export class SendEmailResetPasswordService extends BaseEntity {
   constructor(
     private readonly sendEmailService: SendEmailService,
-    private readonly tokenToResetPasswordRepository: TokenToResetPasswordRepository,
+    private readonly resetPasswordRepository: ResetPasswordRepository,
     private readonly userRepository: UserRepository,
   ) {
     super();
@@ -35,23 +36,23 @@ export class SendEmailResetPasswordService extends BaseEntity {
     }
 
     const tokenSent = await this.sendEmailToResetPassword(
+      user.id,
       user.username,
       user.email,
     );
 
-    await this.tokenToResetPasswordRepository.deleteToken(login);
+    await this.resetPasswordRepository.deleteToken(user.id);
 
-    await this.tokenToResetPasswordRepository.saveToken(login, tokenSent);
+    await this.resetPasswordRepository.saveToken(user.id, login, tokenSent);
   }
 
   private async sendEmailToResetPassword(
+    userId: UUID,
     username: string,
     email: string,
   ): Promise<string> {
-    const randomString = randomstring.generate(20);
-
     const token = await createToken(
-      { randomString },
+      { id: userId },
       SECRET_FORGET_PASSWORD,
       EXPIRES_IN_TOKEN_RESET_PASSWORD,
     );

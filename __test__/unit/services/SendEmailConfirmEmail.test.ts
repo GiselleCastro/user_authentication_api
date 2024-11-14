@@ -2,14 +2,16 @@ import { SendEmailService } from "../../../src/config/EmailSending.config";
 import { SendEmailConfirmEmailService } from "../../../src/service/SendEmailConfirmEmail";
 import { faker } from "@faker-js/faker";
 import { BadRequestError } from "../../../src/config/BaseError";
-import jwt from "jsonwebtoken";
+import { createToken } from "../../../src/utils/createToken";
 import ejs from "ejs";
 
 jest.mock("ejs");
-jest.mock("jsonwebtoken");
+jest.mock("../../../src/config/EmailSending.config");
+jest.mock("../../../src/utils/createToken");
 
 const makeSut = () => {
-  const sendEmailServiceStub = new SendEmailService();
+  const sendEmailServiceStub =
+    new SendEmailService() as jest.Mocked<SendEmailService>;
   const sut = new SendEmailConfirmEmailService(sendEmailServiceStub);
   return { sut, sendEmailServiceStub };
 };
@@ -21,15 +23,13 @@ describe("SendEmailConfirmEmailService", () => {
     const emailMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(null, tokenMock);
-      },
-    );
+    (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
 
     (ejs.renderFile as jest.Mock).mockImplementationOnce(async () => {});
 
-    jest.spyOn(sendEmailServiceStub, "sendEmail").mockResolvedValue();
+    (sendEmailServiceStub.sendEmail as jest.Mock).mockResolvedValueOnce(
+      async () => {},
+    );
 
     expect(await sut.execute(usernameMock, emailMock)).toBeUndefined();
     expect(ejs.renderFile).toHaveBeenCalled();
@@ -41,15 +41,11 @@ describe("SendEmailConfirmEmailService", () => {
     const emailMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(null, tokenMock);
-      },
-    );
+    (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
 
-    jest
-      .spyOn(sendEmailServiceStub as any, "sendEmail")
-      .mockRejectedValueOnce(async () => new BadRequestError("error"));
+    (sendEmailServiceStub.sendEmail as jest.Mock).mockRejectedValueOnce(
+      async () => new BadRequestError("error"),
+    );
 
     (ejs.renderFile as jest.Mock).mockResolvedValue("any");
 
@@ -64,11 +60,7 @@ describe("SendEmailConfirmEmailService", () => {
     const emailMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(null, tokenMock);
-      },
-    );
+    (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
 
     (ejs.renderFile as jest.Mock).mockRejectedValueOnce("any");
 
@@ -82,10 +74,8 @@ describe("SendEmailConfirmEmailService", () => {
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
 
-    (jwt.sign as jest.Mock).mockImplementationOnce(
-      (payload, secret, time, cb) => {
-        cb(new BadRequestError("error"), null);
-      },
+    (createToken as jest.Mock).mockRejectedValueOnce(
+      new BadRequestError("error"),
     );
 
     await expect(sut.execute(usernameMock, emailMock)).rejects.toBeInstanceOf(

@@ -2,10 +2,10 @@
   "name": "user_authentication_api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "tsc && node build/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "start": "tsc && node build/src/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "docker:start": "docker-compose --env-file .env up",
     "docker:dev": "docker-compose --env-file .env -f docker-compose.dev.yaml up",
     "lint": "eslint src/**/*.ts",

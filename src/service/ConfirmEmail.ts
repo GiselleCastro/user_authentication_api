@@ -1,9 +1,9 @@
 import type { UserRepository } from "../repositories/User";
-import { BadRequestError } from "../config/BaseError";
+import { BadRequestError, UnauthorizedError } from "../config/BaseError";
 import {
   NON_EXISTENT_USER,
   EMAIL_ALREADY_CONFIRMED,
-  INVALID_TOKEN,
+  EXPIRED_TOKEN,
 } from "../utils/messages";
 import { constants } from "../config/constants";
 import { validationToken } from "../utils/validationToken";
@@ -36,7 +36,7 @@ export class ConfirmEmailService {
 
       await this.userRepository.confirmEmail(userEmail);
     } else {
-      throw new BadRequestError(INVALID_TOKEN);
+      throw new UnauthorizedError(EXPIRED_TOKEN);
     }
   }
 }

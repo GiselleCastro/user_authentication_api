@@ -20,7 +20,7 @@ export const TOKEN_ALREADY_USED = "Token already used";
 
 export const NO_TOKEN_ACCESS = "No token";
 
-export const INVALID_TOKEN = "Invalid token";
+export const EXPIRED_TOKEN = "Expired token";
 
 export const UNAUTHORIZATION = "Unauthorization";
 

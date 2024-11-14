@@ -8,7 +8,6 @@ import {
   UnauthorizedError,
 } from "../../../src/config/BaseError";
 
-jest.mock("jsonwebtoken");
 jest.mock("../../../src/repositories/User");
 jest.mock("../../../src/service/SendEmailConfirmEmail");
 
@@ -106,12 +105,33 @@ describe("CreateUserService", () => {
     expect(sendEmailConfirmEmailServiceStub.execute).toHaveBeenCalled();
   });
 
+  it("should return bad request error if weak password", async () => {
+    const { sut, userRepositoryStub, sendEmailConfirmEmailServiceStub } =
+      makeSut();
+    const usernameMock = faker.person.firstName();
+    const emailMock = faker.internet.email();
+    const passwordMock = "Aaaaaaaaa";
+    const passwordConfirmedMock = faker.internet.password();
+
+    userRepositoryStub.getUserByUsernameOrEmail.mockImplementationOnce(
+      async () => undefined,
+    );
+
+    await expect(
+      sut.execute(usernameMock, emailMock, passwordMock, passwordConfirmedMock),
+    ).rejects.toBeInstanceOf(BadRequestError);
+    expect(
+      userRepositoryStub.getUserByUsernameOrEmail(usernameMock, emailMock),
+    );
+    expect(sendEmailConfirmEmailServiceStub.execute).not.toHaveBeenCalled();
+  });
+
   it("should return bad request error if passwords do not match", async () => {
     const { sut, userRepositoryStub, sendEmailConfirmEmailServiceStub } =
       makeSut();
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
-    const passwordMock = faker.internet.password();
+    const passwordMock = "A@123456z";
     const passwordConfirmedMock = faker.internet.password();
 
     userRepositoryStub.getUserByUsernameOrEmail.mockImplementationOnce(

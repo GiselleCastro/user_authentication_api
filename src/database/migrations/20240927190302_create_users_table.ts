@@ -5,7 +5,7 @@ export const up = (knex: Knex) => {
     table.uuid("id").unique().primary();
     table.string("username", 22).unique().notNullable();
     table.string("email", 100).unique().notNullable();
-    table.string("passwordHash").notNullable();
+    table.string("password_hash").notNullable();
     table.boolean("confirmed").defaultTo(false);
     table.timestamps(true, true);
   });

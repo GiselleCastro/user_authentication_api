@@ -10,7 +10,6 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>("/register", {
     schema: schemasSwagger.createUser,
     preHandler: [middleware.validateCreateUserInput],
-
     handler: controller.createUserController.handler,
   });
 
