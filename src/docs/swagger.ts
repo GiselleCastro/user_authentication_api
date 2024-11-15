@@ -328,3 +328,97 @@ export const changePassword: FastifySchema = {
     },
   },
 };
+
+export const newAccessTokenAndRefreshToken: FastifySchema = {
+  tags: ["Access token and refresh token"],
+  body: {
+    type: "object",
+    required: ["accessToken", "refreshToken"],
+    additionalProperties: false,
+    properties: {
+      accessToken: {
+        type: "string",
+      },
+      refreshToken: {
+        type: "string",
+      },
+    },
+  },
+  summary:
+    "Generate access token and refresh token. The refresh token is generate only if access token is expired",
+  response: {
+    "200": {
+      description: "Access token and refresh token generated successfully",
+      type: "object",
+      properties: {
+        accessToken: {
+          type: "string",
+        },
+        refreshToken: {
+          type: "string",
+          optional: true,
+        },
+      },
+    },
+    "400": {
+      description: "Non-existent user or error validation",
+      type: "object",
+      properties: {
+        message: {
+          type: "string",
+        },
+        details: {
+          type: "array",
+          optional: true,
+        },
+      },
+    },
+    "401": {
+      description: "Expired token",
+      type: "object",
+      properties: {
+        message: {
+          type: "string",
+        },
+        details: {
+          type: "array",
+          optional: true,
+        },
+      },
+    },
+  },
+};
+
+export const logout: FastifySchema = {
+  tags: ["User logout"],
+  security: [{ authorization: [] }],
+  summary: "Delete refresh token",
+  response: {
+    "204": {
+      description: "Logout successfully",
+      type: "object",
+      properties: {
+        accessToken: {
+          type: "string",
+        },
+        refreshToken: {
+          type: "string",
+          optional: true,
+        },
+      },
+    },
+    "400": {
+      description: "Non-existent user or error validation",
+      type: "object",
+      properties: {
+        message: {
+          type: "string",
+        },
+        details: {
+          type: "array",
+          optional: true,
+        },
+      },
+    },
+  },
+};

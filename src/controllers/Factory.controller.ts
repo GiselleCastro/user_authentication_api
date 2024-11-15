@@ -4,6 +4,8 @@ import { LoginController } from "./Login";
 import { ResetPasswordController } from "./ResetPassword";
 import { ConfirmEmailController } from "./ConfirmEmail";
 import { SendEmailResetPasswordController } from "./SendEmailResetPassword";
+import { NewAccessTokenAndRefreshTokenController } from "./NewAccessTokenAndRefreshToken";
+import { LogoutController } from "./Logout";
 import * as factory from "../service/Factory.service";
 
 class ChangePasswordControllerFactory {
@@ -22,14 +24,22 @@ class CreateUserControllerFactory {
 }
 export const createUserController = CreateUserControllerFactory.make();
 
-class LoginControllerControllerFactory {
+class LoginControllerFactory {
   static make(): LoginController {
     const generateTokenService = factory.SignInServiceFactory.make();
     return new LoginController(generateTokenService);
   }
 }
-export const loginControllerController =
-  LoginControllerControllerFactory.make();
+export const loginController = LoginControllerFactory.make();
+
+class LogoutControllerFactory {
+  static make(): LogoutController {
+    const invalidateRefreshTokenService =
+      factory.InvalidateRefreshTokenServiceFactory.make();
+    return new LogoutController(invalidateRefreshTokenService);
+  }
+}
+export const logoutController = LogoutControllerFactory.make();
 
 class ResetPasswordControllerFactory {
   static make(): ResetPasswordController {
@@ -56,3 +66,16 @@ class SendEmailResetPasswordControllerFactory {
 }
 export const sendEmailResetPasswordController =
   SendEmailResetPasswordControllerFactory.make();
+
+class NewAccessTokenAndRefreshTokenControllerFactory {
+  static make(): NewAccessTokenAndRefreshTokenController {
+    const generateRefreshTokenAndAccessTokenService =
+      factory.GenerateRefreshTokenAndAccessTokenServiceFactory.make();
+    return new NewAccessTokenAndRefreshTokenController(
+      generateRefreshTokenAndAccessTokenService,
+    );
+  }
+}
+export const newAccessTokenAndRefreshTokenController =
+  NewAccessTokenAndRefreshTokenControllerFactory.make();
+NewAccessTokenAndRefreshTokenController;

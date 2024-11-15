@@ -2,8 +2,8 @@ import { UUID } from ".";
 
 export type Authorization = {
   id: UUID;
-  role: string;
-  permissions: string[];
+  role?: string;
+  permissions?: string[];
 };
 
 export type TokenJSON = {

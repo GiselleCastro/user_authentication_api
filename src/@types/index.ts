@@ -15,6 +15,10 @@ export type UserId = z.infer<typeof Schema.UserId>;
 
 export type UUID = typeof uuid;
 
+export type AccessTokenAndRefreshToken = z.infer<
+  typeof Schema.AccessTokenAndRefreshToken
+>;
+
 export { TokenJSON, Authorization, Access };
 
 export type RefresTokenJSON = {

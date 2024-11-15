@@ -40,3 +40,8 @@ export const Token = z.object({
 export const UserId = z.object({
   userId: z.custom<UUID>((i) => (typeof i === "string" ? validate(i) : false)),
 });
+
+export const AccessTokenAndRefreshToken = z.object({
+  accessToken: z.string().trim().min(1),
+  refreshToken: z.string().trim().min(1),
+});

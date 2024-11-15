@@ -156,15 +156,16 @@ describe("RefreshTokenRepository", () => {
     });
   });
 
-  describe("deleteRefreshToken", () => {
+  describe("deleteRefreshTokenByRefreshTokenId", () => {
     it("Refresh token deleted successfully", async () => {
       const refreshTokenId = faker.string.uuid() as unknown as UUID;
 
       tracker.on.delete("refresh_tokens").response(1);
 
-      const data = await new RefreshTokenRepository().deleteRefreshToken(
-        refreshTokenId,
-      );
+      const data =
+        await new RefreshTokenRepository().deleteRefreshTokenByRefreshTokenId(
+          refreshTokenId,
+        );
 
       const deleteHistory = tracker.history.delete;
 
@@ -179,7 +180,9 @@ describe("RefreshTokenRepository", () => {
       tracker.on.delete("refresh_tokens").simulateError("Connection lost");
 
       await expect(
-        new RefreshTokenRepository().deleteRefreshToken(refreshTokenId),
+        new RefreshTokenRepository().deleteRefreshTokenByRefreshTokenId(
+          refreshTokenId,
+        ),
       ).rejects.toBeInstanceOf(UnprocessableEntityError);
     });
   });

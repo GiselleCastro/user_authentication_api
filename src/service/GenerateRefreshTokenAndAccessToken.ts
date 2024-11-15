@@ -1,18 +1,19 @@
 import type { UserRepository } from "../repositories/User";
+import type { RefreshTokenRepository } from "../repositories/RefreshToken";
+import { TokenExpiredError } from "jsonwebtoken";
 import { constants } from "../config/constants";
-import { BadRequestError } from "../config/BaseError";
+import { BadRequestError, UnauthorizedError } from "../config/BaseError";
 import { TokenJSON, Authorization, UUID, RefresTokenJSON } from "../@types";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import { createToken } from "../utils/createToken";
 import { validationToken } from "../utils/validationToken";
 import { EXPIRED_TOKEN, NON_EXISTENT_USER } from "../utils/messages";
-import { RefreshTokenRepository } from "../repositories/RefreshToken";
 
 const {
   SECRET_TOKEN_ACCESS,
   EXPIRES_IN_TOKEN_ACCESS,
-  SECRET_TOKEN_REFRESH_TOKEN,
+  SECRET_REFRESH_TOKEN,
   EXPIRES_IN_TOKEN_REFRESH_TOKEN,
 } = constants;
 
@@ -33,12 +34,18 @@ export class GenerateRefreshTokenAndAccessTokenService {
       throw new BadRequestError(NON_EXISTENT_USER);
     }
 
-    if ((!accessToken && refreshToken) || (accessToken && !refreshToken)) {
-      console.log({ userId });
-      const accessTokenDecoded = (await validationToken(
+    if (accessToken && refreshToken) {
+      const accessTokenDecoded = await validationToken(
         accessToken,
         SECRET_TOKEN_ACCESS,
-      )) as TokenJSON;
+      )
+        .then((result) => result as TokenJSON)
+        .catch((e) => {
+          if (e.message === TokenExpiredError.name) {
+            return false;
+          }
+          throw e;
+        });
 
       if (accessTokenDecoded) {
         return { accessToken };
@@ -46,18 +53,23 @@ export class GenerateRefreshTokenAndAccessTokenService {
 
       const refreshTokenDecoded = (await validationToken(
         refreshToken,
-        SECRET_TOKEN_REFRESH_TOKEN,
+        SECRET_REFRESH_TOKEN,
       )) as RefresTokenJSON;
 
       const isValidRefreshToken = await this.isValidRefreshToken(
-        refreshTokenDecoded.tokenId as UUID,
+        refreshTokenDecoded?.tokenId as UUID,
         refreshToken,
       );
 
-      if (!isValidRefreshToken) throw new BadRequestError(EXPIRED_TOKEN);
+      if (!isValidRefreshToken) throw new UnauthorizedError(EXPIRED_TOKEN);
 
-      await this.deleteRefreshToken(refreshTokenDecoded.tokenId as UUID);
+      await this.deleteRefreshTokenByRefreshTokenId(
+        refreshTokenDecoded.tokenId as UUID,
+      );
+    } else {
+      await this.deleteRefreshTokenByUserId(userId);
     }
+
     const refreshTokenAndAccessToken =
       await this.generateRefreshTokenAndAccessToken(userId);
 
@@ -102,7 +114,7 @@ export class GenerateRefreshTokenAndAccessTokenService {
 
     const refreshToken = await createToken(
       payload,
-      SECRET_TOKEN_REFRESH_TOKEN,
+      SECRET_REFRESH_TOKEN,
       EXPIRES_IN_TOKEN_REFRESH_TOKEN,
     );
 
@@ -121,8 +133,14 @@ export class GenerateRefreshTokenAndAccessTokenService {
     return { accessToken, refreshToken };
   }
 
-  private async deleteRefreshToken(refreshTokenIdOld: UUID) {
-    await this.refreshTokenRepository.deleteRefreshToken(refreshTokenIdOld);
+  private async deleteRefreshTokenByRefreshTokenId(refreshTokenIdOld: UUID) {
+    await this.refreshTokenRepository.deleteRefreshTokenByRefreshTokenId(
+      refreshTokenIdOld,
+    );
+  }
+
+  private async deleteRefreshTokenByUserId(userId: UUID) {
+    await this.refreshTokenRepository.deleteRefreshTokenByUserId(userId);
   }
 
   private async isValidRefreshToken(
@@ -131,12 +149,11 @@ export class GenerateRefreshTokenAndAccessTokenService {
   ) {
     const refreshTokenDB =
       await this.refreshTokenRepository.getRefreshTokenById(refreshTokenId);
-
     if (!refreshTokenDB) throw new BadRequestError(EXPIRED_TOKEN);
 
     const checkRefreshToken = await bcrypt.compare(
       refreshToken,
-      refreshTokenDB,
+      refreshTokenDB.refresh_token_hash,
     );
 
     return checkRefreshToken;

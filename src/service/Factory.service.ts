@@ -12,6 +12,7 @@ import { ResetPasswordService } from "./ResetPassword";
 import { SendEmailConfirmEmailService } from "./SendEmailConfirmEmail";
 import { SendEmailResetPasswordService } from "./SendEmailResetPassword";
 import { GenerateRefreshTokenAndAccessTokenService } from "./GenerateRefreshTokenAndAccessToken";
+import { InvalidateRefreshTokenService } from "./InvalidateRefreshToken";
 
 export class ChangePassowrdServiceFactory {
   static make(): ChangePassowrdService {
@@ -69,6 +70,16 @@ export class SignInServiceFactory {
   }
 }
 
+export class InvalidateRefreshTokenServiceFactory {
+  static make(): InvalidateRefreshTokenService {
+    const userRepository = new UserRepository();
+    const refreshTokenRepository = new RefreshTokenRepository();
+    return new InvalidateRefreshTokenService(
+      userRepository,
+      refreshTokenRepository,
+    );
+  }
+}
 export class ResetPasswordServiceFactory {
   static make(): ResetPasswordService {
     const userRepository = new UserRepository();

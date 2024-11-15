@@ -18,7 +18,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>("/login", {
     schema: schemasSwagger.login,
     preHandler: [middleware.validateLoginInput],
-    handler: controller.loginControllerController.handler,
+    handler: controller.loginController.handler,
   });
 
   fastify.post<{
@@ -47,5 +47,16 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
     schema: schemasSwagger.confirmEmail,
     preHandler: [middleware.validateTokenInput],
     handler: controller.confirmEmailController.handler,
+  });
+
+  fastify.post<{
+    Body: types.AccessTokenAndRefreshToken;
+  }>("/refresh-token", {
+    schema: schemasSwagger.newAccessTokenAndRefreshToken,
+    preHandler: [
+      middleware.validateAccessTokenAndRefreshToken,
+      middleware.checkRefreshToken,
+    ],
+    handler: controller.newAccessTokenAndRefreshTokenController.handler,
   });
 };

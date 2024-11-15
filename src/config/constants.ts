@@ -9,7 +9,7 @@ export const constants = {
   BASE_URL: process.env.BASE_URL as string,
   SECRET_TOKEN_ACCESS: process.env.SECRET_TOKEN_ACCESS as string,
   EXPIRES_IN_TOKEN_ACCESS: Number(process.env.EXPIRES_IN_TOKEN_ACCESS),
-  SECRET_TOKEN_REFRESH_TOKEN: process.env.SECRET_TOKEN_REFRESH_TOKEN as string,
+  SECRET_REFRESH_TOKEN: process.env.SECRET_REFRESH_TOKEN as string,
   EXPIRES_IN_TOKEN_REFRESH_TOKEN: Number(
     process.env.EXPIRES_IN_TOKEN_REFRESH_TOKEN,
   ),

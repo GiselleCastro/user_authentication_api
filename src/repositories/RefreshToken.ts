@@ -24,21 +24,37 @@ export class RefreshTokenRepository extends BaseEntity {
       });
   }
 
-  async deleteRefreshToken(refreshTokenId: UUID) {
+  async deleteRefreshTokenByRefreshTokenId(refreshTokenId: UUID) {
     return db("refresh_tokens")
       .where("id", "=", refreshTokenId)
       .delete()
       .catch((error) => {
-        this.logger.error(this.deleteRefreshToken.name, error, {
+        this.logger.error(this.deleteRefreshTokenByRefreshTokenId.name, error, {
           refreshTokenId,
         });
         this.handlerError.unprocessableEntityError(
-          this.deleteRefreshToken.name,
+          this.deleteRefreshTokenByRefreshTokenId.name,
         );
       });
   }
 
-  async getRefreshTokenById(refreshTokenId: UUID) {
+  async deleteRefreshTokenByUserId(userId: UUID) {
+    return db("refresh_tokens")
+      .where("user_id", "=", userId)
+      .delete()
+      .catch((error) => {
+        this.logger.error(this.deleteRefreshTokenByUserId.name, error, {
+          userId,
+        });
+        this.handlerError.unprocessableEntityError(
+          this.deleteRefreshTokenByUserId.name,
+        );
+      });
+  }
+
+  async getRefreshTokenById(
+    refreshTokenId: UUID,
+  ): Promise<{ id: UUID; user_id: UUID; refresh_token_hash: string }> {
     return db("refresh_tokens")
       .select("id", "user_id", "refresh_token_hash")
       .where("id", "=", refreshTokenId)

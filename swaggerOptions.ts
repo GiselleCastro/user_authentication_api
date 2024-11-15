@@ -16,10 +16,19 @@ export const swaggerOptions: SwaggerOptions = {
         email: "giselle@fisica.ufc.br",
       },
     },
+    consumes: ["application/json"],
+    produces: ["application/json"],
+    basePath: "",
+    securityDefinitions: {
+      authorization: {
+        description: 'authorization header token, example: "Bearer #TOKEN#"',
+        type: "apiKey",
+        name: "authorization",
+        in: "header",
+      },
+    },
     //schemes: ["http", "https"],
     //host: "localhost",
-    //consumes: ["application/json"],
-    //produces: ["application/json"],
   },
 };
 
