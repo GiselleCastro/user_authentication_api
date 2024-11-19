@@ -1,3 +1,5 @@
+[Em construção]
+
 # API de Autenticação do Usuário
 
 Esta API fornece endpoints para autenticação de usuários, registro, e gerenciamento de contas, incluindo recuperação de senha, confirmação de e-mail e manipulação de tokens.
