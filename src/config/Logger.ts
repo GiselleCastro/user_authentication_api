@@ -1,5 +1,5 @@
-import winston from "winston";
-import { WintonConfig } from "./Winton.config";
+import winston from 'winston';
+import { WintonConfig } from './Winton.config';
 
 export class Logger {
   private readonly logger: winston.Logger;

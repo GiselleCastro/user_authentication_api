@@ -1,56 +1,56 @@
-import type { FastifySchema } from "fastify/types/schema";
+import type { FastifySchema } from 'fastify/types/schema';
 
 export const createUser: FastifySchema = {
-  tags: ["User register"],
+  tags: ['User register'],
   body: {
-    type: "object",
+    type: 'object',
     properties: {
       username: {
-        type: "string",
+        type: 'string',
       },
       email: {
-        type: "string",
+        type: 'string',
       },
       password: {
-        type: "string",
+        type: 'string',
       },
       confirmPassword: {
-        type: "string",
+        type: 'string',
       },
     },
-    required: ["username", "email", "password", "confirmPassword"],
+    required: ['username', 'email', 'password', 'confirmPassword'],
     additionalProperties: false,
   },
-  summary: "User register",
+  summary: 'User register',
   response: {
-    "201": {
-      description: "User registered successfully",
-      type: "null",
+    '201': {
+      description: 'User registered successfully',
+      type: 'null',
     },
-    "400": {
+    '400': {
       description:
-        "User already registered, error validation or email not sent to confirm email",
-      type: "object",
+        'User already registered, error validation or email not sent to confirm email',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "401": {
+    '401': {
       description:
-        "User already registered, but email not confirmed. The email is resent",
-      type: "object",
+        'User already registered, but email not confirmed. The email is resent',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -59,57 +59,57 @@ export const createUser: FastifySchema = {
 };
 
 export const login: FastifySchema = {
-  tags: ["User login"],
+  tags: ['User login'],
   body: {
-    type: "object",
-    required: ["login", "password"],
+    type: 'object',
+    required: ['login', 'password'],
     additionalProperties: false,
     properties: {
       login: {
-        type: "string",
+        type: 'string',
       },
       password: {
-        type: "string",
+        type: 'string',
       },
     },
   },
-  summary: "User login",
+  summary: 'User login',
   response: {
-    "200": {
-      description: "Token generated successfully",
-      type: "object",
+    '200': {
+      description: 'Token generated successfully',
+      type: 'object',
       properties: {
         accessToken: {
-          type: "string",
+          type: 'string',
         },
         refreshToken: {
-          type: "string",
+          type: 'string',
         },
       },
     },
-    "400": {
+    '400': {
       description:
-        "Non-existent user, error validation or email not sent to confirm email",
-      type: "object",
+        'Non-existent user, error validation or email not sent to confirm email',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "401": {
-      description: "Email not confirmed. The email is resent",
-      type: "object",
+    '401': {
+      description: 'Email not confirmed. The email is resent',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -118,33 +118,33 @@ export const login: FastifySchema = {
 };
 
 export const forgotPassword: FastifySchema = {
-  tags: ["Password recovery"],
+  tags: ['Password recovery'],
   body: {
-    type: "object",
-    required: ["login"],
+    type: 'object',
+    required: ['login'],
     additionalProperties: false,
     properties: {
       login: {
-        type: "string",
+        type: 'string',
       },
     },
   },
-  summary: "Send email with link to reset password",
+  summary: 'Send email with link to reset password',
   response: {
-    "204": {
-      description: "Email sending successfully",
-      type: "null",
+    '204': {
+      description: 'Email sending successfully',
+      type: 'null',
     },
-    "400": {
+    '400': {
       description:
-        "Non-existent user, error validation or email not sent to reset password",
-      type: "object",
+        'Non-existent user, error validation or email not sent to reset password',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -153,72 +153,72 @@ export const forgotPassword: FastifySchema = {
 };
 
 export const resetPassword: FastifySchema = {
-  tags: ["Password recovery"],
+  tags: ['Password recovery'],
   querystring: {
-    type: "object",
-    required: ["token"],
+    type: 'object',
+    required: ['token'],
     additionalProperties: false,
     properties: {
       token: {
-        type: "string",
-        description: "token sent by email",
+        type: 'string',
+        description: 'token sent by email',
       },
     },
   },
   body: {
-    type: "object",
-    required: ["password", "confirmPassword"],
+    type: 'object',
+    required: ['password', 'confirmPassword'],
     additionalProperties: false,
     properties: {
       password: {
-        type: "string",
+        type: 'string',
       },
       confirmPassword: {
-        type: "string",
+        type: 'string',
       },
     },
   },
-  summary: "User regains access through password reset",
+  summary: 'User regains access through password reset',
   response: {
-    "204": {
-      description: "Reset password successfully",
-      type: "null",
+    '204': {
+      description: 'Reset password successfully',
+      type: 'null',
     },
-    "400": {
-      description: "Passwords do not match or error validation",
-      type: "object",
+    '400': {
+      description: 'Passwords do not match or error validation',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "401": {
-      description: "Invalid token",
-      type: "object",
+    '401': {
+      description: 'Invalid token',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "422": {
-      description: "Token already used",
-      type: "object",
+    '422': {
+      description: 'Token already used',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -227,45 +227,45 @@ export const resetPassword: FastifySchema = {
 };
 
 export const confirmEmail: FastifySchema = {
-  tags: ["User register"],
+  tags: ['User register'],
   querystring: {
-    type: "object",
-    required: ["token"],
+    type: 'object',
+    required: ['token'],
     additionalProperties: false,
     properties: {
       token: {
-        type: "string",
+        type: 'string',
       },
     },
   },
-  summary: "Confirm registered email",
+  summary: 'Confirm registered email',
   response: {
-    "204": {
-      description: "Confirmed email registered successfully",
-      type: "null",
+    '204': {
+      description: 'Confirmed email registered successfully',
+      type: 'null',
     },
-    "400": {
-      description: "Non-existent user or error validation",
-      type: "object",
+    '400': {
+      description: 'Non-existent user or error validation',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "401": {
-      description: "Invalid token",
-      type: "object",
+    '401': {
+      description: 'Invalid token',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -274,54 +274,53 @@ export const confirmEmail: FastifySchema = {
 };
 
 export const changePassword: FastifySchema = {
-  tags: ["User logged in"],
+  tags: ['User logged in'],
   security: [{ authorization: [] }],
   body: {
-    type: "object",
-    required: ["password", "newPassword", "confirmNewPassword"],
+    type: 'object',
+    required: ['password', 'newPassword', 'confirmNewPassword'],
     additionalProperties: false,
     properties: {
       password: {
-        type: "string",
+        type: 'string',
       },
       newPassword: {
-        type: "string",
+        type: 'string',
       },
       confirmNewPassword: {
-        type: "string",
+        type: 'string',
       },
     },
   },
-  summary: "User regains access through password reset",
+  summary: 'User regains access through password reset',
   response: {
-    "204": {
-      description: "Password changed successfully",
-      type: "null",
+    '204': {
+      description: 'Password changed successfully',
+      type: 'null',
       examples: [],
     },
-    "400": {
-      description:
-        "Password incorrect, new passwords do not match or error validation",
-      type: "object",
+    '400': {
+      description: 'Password incorrect, new passwords do not match or error validation',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "401": {
-      description: "Invalid token",
-      type: "object",
+    '401': {
+      description: 'Invalid token',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -330,58 +329,58 @@ export const changePassword: FastifySchema = {
 };
 
 export const newAccessTokenAndRefreshToken: FastifySchema = {
-  tags: ["Access token and refresh token"],
+  tags: ['Access token and refresh token'],
   body: {
-    type: "object",
-    required: ["accessToken", "refreshToken"],
+    type: 'object',
+    required: ['accessToken', 'refreshToken'],
     additionalProperties: false,
     properties: {
       accessToken: {
-        type: "string",
+        type: 'string',
       },
       refreshToken: {
-        type: "string",
+        type: 'string',
       },
     },
   },
   summary:
-    "Generate access token and refresh token. The refresh token is generate only if access token is expired",
+    'Generate access token and refresh token. The refresh token is generate only if access token is expired',
   response: {
-    "200": {
-      description: "Access token and refresh token generated successfully",
-      type: "object",
+    '200': {
+      description: 'Access token and refresh token generated successfully',
+      type: 'object',
       properties: {
         accessToken: {
-          type: "string",
+          type: 'string',
         },
         refreshToken: {
-          type: "string",
+          type: 'string',
           optional: true,
         },
       },
     },
-    "400": {
-      description: "Non-existent user or error validation",
-      type: "object",
+    '400': {
+      description: 'Non-existent user or error validation',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
     },
-    "401": {
-      description: "Expired token",
-      type: "object",
+    '401': {
+      description: 'Expired token',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },
@@ -390,32 +389,32 @@ export const newAccessTokenAndRefreshToken: FastifySchema = {
 };
 
 export const logout: FastifySchema = {
-  tags: ["User logout"],
+  tags: ['User logout'],
   security: [{ authorization: [] }],
-  summary: "Delete refresh token",
+  summary: 'Delete refresh token',
   response: {
-    "204": {
-      description: "Logout successfully",
-      type: "object",
+    '204': {
+      description: 'Logout successfully',
+      type: 'object',
       properties: {
         accessToken: {
-          type: "string",
+          type: 'string',
         },
         refreshToken: {
-          type: "string",
+          type: 'string',
           optional: true,
         },
       },
     },
-    "400": {
-      description: "Non-existent user or error validation",
-      type: "object",
+    '400': {
+      description: 'Non-existent user or error validation',
+      type: 'object',
       properties: {
         message: {
-          type: "string",
+          type: 'string',
         },
         details: {
-          type: "array",
+          type: 'array',
           optional: true,
         },
       },

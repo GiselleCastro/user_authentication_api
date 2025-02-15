@@ -1,18 +1,18 @@
-import { SendEmailResetPasswordService } from "../../../src/service/SendEmailResetPassword";
-import { SendEmailService } from "../../../src/config/EmailSending.config";
-import { ResetPasswordRepository } from "../../../src/repositories/ResetPassword";
-import { UserRepository } from "../../../src/repositories/User";
-import { faker } from "@faker-js/faker";
-import { BadRequestError } from "../../../src/config/BaseError";
-import { createToken } from "../../../src/utils/createToken";
-import { UUID } from "../../../src/@types";
-import ejs from "ejs";
+import { SendEmailResetPasswordService } from '../../../src/service/SendEmailResetPassword';
+import { SendEmailService } from '../../../src/config/EmailSending.config';
+import { ResetPasswordRepository } from '../../../src/repositories/ResetPassword';
+import { UserRepository } from '../../../src/repositories/User';
+import { faker } from '@faker-js/faker';
+import { BadRequestError } from '../../../src/config/BaseError';
+import { createToken } from '../../../src/utils/createToken';
+import { UUID } from '../../../src/@types';
+import ejs from 'ejs';
 
-jest.mock("ejs");
-jest.mock("../../../src/config/EmailSending.config");
-jest.mock("../../../src/repositories/ResetPassword");
-jest.mock("../../../src/repositories/User");
-jest.mock("../../../src/utils/createToken");
+jest.mock('ejs');
+jest.mock('../../../src/config/EmailSending.config');
+jest.mock('../../../src/repositories/ResetPassword');
+jest.mock('../../../src/repositories/User');
+jest.mock('../../../src/utils/createToken');
 
 const makeSut = () => {
   const sendEmailServiceStub = new SendEmailService();
@@ -32,14 +32,10 @@ const makeSut = () => {
   };
 };
 
-describe("SendEmailResetPasswordService", () => {
-  it("Email to reset password sent successfully", async () => {
-    const {
-      sut,
-      userRepositoryStub,
-      resetPasswordRepositoryStub,
-      sendEmailServiceStub,
-    } = makeSut();
+describe('SendEmailResetPasswordService', () => {
+  it('Email to reset password sent successfully', async () => {
+    const { sut, userRepositoryStub, resetPasswordRepositoryStub, sendEmailServiceStub } =
+      makeSut();
     const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const emailMock = faker.internet.email();
@@ -53,9 +49,7 @@ describe("SendEmailResetPasswordService", () => {
 
     (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
 
-    (sendEmailServiceStub.sendEmail as jest.Mock).mockResolvedValueOnce(
-      async () => {},
-    );
+    (sendEmailServiceStub.sendEmail as jest.Mock).mockResolvedValueOnce(async () => {});
 
     (ejs.renderFile as jest.Mock).mockResolvedValueOnce(async () => {});
 
@@ -65,7 +59,7 @@ describe("SendEmailResetPasswordService", () => {
     expect(resetPasswordRepositoryStub.saveToken).toHaveBeenCalled();
   });
 
-  it("should return bad request error if there is an error sending email", async () => {
+  it('should return bad request error if there is an error sending email', async () => {
     const { sut, userRepositoryStub, sendEmailServiceStub } = makeSut();
     const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
@@ -80,19 +74,17 @@ describe("SendEmailResetPasswordService", () => {
 
     (createToken as jest.Mock).mockResolvedValueOnce(tokenMock);
 
-    (ejs.renderFile as jest.Mock).mockResolvedValue("any");
+    (ejs.renderFile as jest.Mock).mockResolvedValue('any');
 
     (sendEmailServiceStub.sendEmail as jest.Mock).mockRejectedValueOnce(
-      async () => new BadRequestError("error"),
+      async () => new BadRequestError('error'),
     );
 
-    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
-      BadRequestError,
-    );
+    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(BadRequestError);
     expect(ejs.renderFile).toHaveBeenCalled();
   });
 
-  it("should return bad request error if there is an error rendering email template", async () => {
+  it('should return bad request error if there is an error rendering email template', async () => {
     const { sut, userRepositoryStub } = makeSut();
     const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
@@ -109,12 +101,10 @@ describe("SendEmailResetPasswordService", () => {
 
     (ejs.renderFile as jest.Mock).mockRejectedValueOnce(() => {});
 
-    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
-      BadRequestError,
-    );
+    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(BadRequestError);
   });
 
-  it("should return bad request error if there is an error generating token", async () => {
+  it('should return bad request error if there is an error generating token', async () => {
     const { sut, userRepositoryStub } = makeSut();
     const userId = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
@@ -126,27 +116,19 @@ describe("SendEmailResetPasswordService", () => {
       email: emailMock,
     });
 
-    (createToken as jest.Mock).mockRejectedValueOnce(
-      new BadRequestError("error"),
-    );
+    (createToken as jest.Mock).mockRejectedValueOnce(new BadRequestError('error'));
 
-    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
-      BadRequestError,
-    );
+    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(BadRequestError);
     expect(ejs.render).not.toHaveBeenCalled();
   });
 
-  it("should return bad request error if non existent user", async () => {
+  it('should return bad request error if non existent user', async () => {
     const { sut, userRepositoryStub } = makeSut();
     const usernameMock = faker.person.firstName();
 
-    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce(
-      undefined,
-    );
+    (userRepositoryStub.getUserByLogin as jest.Mock).mockResolvedValueOnce(undefined);
 
-    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(
-      BadRequestError,
-    );
+    await expect(sut.execute(usernameMock)).rejects.toBeInstanceOf(BadRequestError);
     expect(ejs.render).not.toHaveBeenCalled();
   });
 });

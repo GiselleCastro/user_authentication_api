@@ -1,17 +1,17 @@
-import type { FastifyInstance } from "fastify/types/instance";
-import { ChangePassowrdService } from "../../../src/service/ChangePassword";
-import { CheckAutheticationMiddleware } from "../../../src/middleware/CheckAuthetication";
-import { buildServer } from "../../../src/server";
-import { faker } from "@faker-js/faker";
-import { BadRequestError } from "../../../src/config/BaseError";
-import { UUID } from "../../../src/@types";
-import { ERROR_VALIDATION } from "../../../src/utils/messages";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyInstance } from 'fastify/types/instance';
+import { ChangePassowrdService } from '../../../src/service/ChangePassword';
+import { CheckAutheticationMiddleware } from '../../../src/middleware/CheckAuthetication';
+import { buildServer } from '../../../src/server';
+import { faker } from '@faker-js/faker';
+import { BadRequestError } from '../../../src/config/BaseError';
+import { UUID } from '../../../src/@types';
+import { ERROR_VALIDATION } from '../../../src/utils/messages';
+import HttpStatusCode from 'http-status-codes';
 
-jest.mock("../../../src/middleware/CheckAuthetication");
-jest.mock("../../../src/service/ChangePassword");
+jest.mock('../../../src/middleware/CheckAuthetication');
+jest.mock('../../../src/service/ChangePassword');
 
-describe("PATCH /my-account/change-password", () => {
+describe('PATCH /my-account/change-password', () => {
   let serverStub: FastifyInstance;
 
   beforeAll(async () => {
@@ -22,7 +22,7 @@ describe("PATCH /my-account/change-password", () => {
     await serverStub.close();
   });
 
-  it.skip("Password updated successfully", async () => {
+  it.skip('Password updated successfully', async () => {
     const tokenQuery = faker.string.alphanumeric(10);
     const changePasswordInput = {
       password: faker.internet.password(),
@@ -35,8 +35,8 @@ describe("PATCH /my-account/change-password", () => {
     const userId = faker.string.uuid() as unknown as UUID;
 
     const response = await serverStub.inject({
-      method: "PATCH",
-      url: "/my-account/change-password",
+      method: 'PATCH',
+      url: '/my-account/change-password',
       payload: changePasswordInput,
       headers: {
         authorization: `Bearer ${tokenQuery}`,
@@ -44,21 +44,21 @@ describe("PATCH /my-account/change-password", () => {
     });
 
     const checkAutheticationMiddlewareSpy = jest
-      .spyOn(CheckAutheticationMiddleware.prototype, "handle")
+      .spyOn(CheckAutheticationMiddleware.prototype, 'handle')
       .mockImplementationOnce(async (request) => {
         request.access = {
           id: userId,
-          role: "",
-          permissions: [""],
+          role: '',
+          permissions: [''],
         };
       });
 
     const changePasswordServiceSpy = jest
-      .spyOn(ChangePassowrdService.prototype, "execute")
+      .spyOn(ChangePassowrdService.prototype, 'execute')
       .mockResolvedValue(undefined);
 
     expect(response.statusCode).toBe(HttpStatusCode.NO_CONTENT);
-    expect(response.body).toBe("");
+    expect(response.body).toBe('');
     expect(changePasswordServiceSpy).toHaveBeenCalledWith(
       userId,
       ...Object.values(changePasswordInput),
@@ -68,7 +68,7 @@ describe("PATCH /my-account/change-password", () => {
     changePasswordServiceSpy.mockRestore();
   });
 
-  it("Error updating password", async () => {
+  it('Error updating password', async () => {
     const tokenQuery = faker.string.alphanumeric(10);
     const changePasswordInput = {
       password: faker.internet.password(),
@@ -79,23 +79,23 @@ describe("PATCH /my-account/change-password", () => {
     const userId = faker.string.uuid() as unknown as UUID;
 
     const checkAutheticationMiddlewareSpy = jest
-      .spyOn(CheckAutheticationMiddleware.prototype, "handle")
+      .spyOn(CheckAutheticationMiddleware.prototype, 'handle')
       .mockImplementationOnce(async (request) => {
         request.access = {
           id: userId,
-          role: "",
-          permissions: [""],
+          role: '',
+          permissions: [''],
         };
       });
 
-    const messageError = "error";
+    const messageError = 'error';
     const changePasswordServiceSpy = jest
-      .spyOn(ChangePassowrdService.prototype, "execute")
+      .spyOn(ChangePassowrdService.prototype, 'execute')
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({
-      method: "PATCH",
-      url: "/my-account/change-password",
+      method: 'PATCH',
+      url: '/my-account/change-password',
       payload: changePasswordInput,
       headers: {
         authorization: `Bearer ${tokenQuery}`,
@@ -103,9 +103,7 @@ describe("PATCH /my-account/change-password", () => {
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
-    expect(response.headers["content-type"]).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
     expect(response.json()).toEqual({ message: messageError });
     expect(changePasswordServiceSpy).toHaveBeenCalledWith(
       userId,
@@ -116,10 +114,10 @@ describe("PATCH /my-account/change-password", () => {
     changePasswordServiceSpy.mockRestore();
   });
 
-  it("Error validation - example: password cannot be empty", async () => {
+  it('Error validation - example: password cannot be empty', async () => {
     const tokenQuery = faker.string.alphanumeric(10);
     const changePasswordInput = {
-      password: "",
+      password: '',
       newPassword: faker.internet.password(),
       confirmNewPassword: faker.internet.password(),
     };
@@ -127,18 +125,18 @@ describe("PATCH /my-account/change-password", () => {
     const userId = faker.string.uuid() as unknown as UUID;
 
     const checkAutheticationMiddlewareSpy = jest
-      .spyOn(CheckAutheticationMiddleware.prototype, "handle")
+      .spyOn(CheckAutheticationMiddleware.prototype, 'handle')
       .mockImplementationOnce(async (request) => {
         request.access = {
           id: userId,
-          role: "",
-          permissions: [""],
+          role: '',
+          permissions: [''],
         };
       });
 
     const response = await serverStub.inject({
-      method: "PATCH",
-      url: "/my-account/change-password",
+      method: 'PATCH',
+      url: '/my-account/change-password',
       payload: changePasswordInput,
       headers: {
         authorization: `Bearer ${tokenQuery}`,
@@ -147,7 +145,7 @@ describe("PATCH /my-account/change-password", () => {
 
     expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
     expect(response.json()).toEqual({
-      details: ["String must contain at least 1 character(s)"],
+      details: ['String must contain at least 1 character(s)'],
       message: ERROR_VALIDATION,
     });
 

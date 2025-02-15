@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { validate } from "uuid";
-import { UUID } from "../@types";
+import { z } from 'zod';
+import { validate } from 'uuid';
+import { UUID } from '../@types';
 
 export const CreateUser = z.object({
   username: z
@@ -37,7 +37,7 @@ export const Token = z.object({
 });
 
 export const UserId = z.object({
-  userId: z.custom<UUID>((i) => (typeof i === "string" ? validate(i) : false)),
+  userId: z.custom<UUID>((i) => (typeof i === 'string' ? validate(i) : false)),
 });
 
 export const AccessTokenAndRefreshToken = z.object({

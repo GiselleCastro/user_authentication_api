@@ -1,8 +1,8 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import type { ConfirmEmailService } from "../service/ConfirmEmail";
-import { BaseEntity } from "../config/BaseEntity";
-import * as types from "../@types";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { ConfirmEmailService } from '../service/ConfirmEmail';
+import { BaseEntity } from '../config/BaseEntity';
+import * as types from '../@types';
+import HttpStatusCode from 'http-status-codes';
 
 export class ConfirmEmailController extends BaseEntity {
   constructor(private readonly confirmEmailService: ConfirmEmailService) {

@@ -1,13 +1,13 @@
-import type { UserRepository } from "../repositories/User";
-import type { SendEmailConfirmEmailService } from "./SendEmailConfirmEmail";
-import type { GenerateRefreshTokenAndAccessTokenService } from "./GenerateRefreshTokenAndAccessToken";
-import bcrypt from "bcrypt";
-import { BadRequestError, UnauthorizedError } from "../config/BaseError";
+import type { UserRepository } from '../repositories/User';
+import type { SendEmailConfirmEmailService } from './SendEmailConfirmEmail';
+import type { GenerateRefreshTokenAndAccessTokenService } from './GenerateRefreshTokenAndAccessToken';
+import bcrypt from 'bcrypt';
+import { BadRequestError, UnauthorizedError } from '../config/BaseError';
 import {
   PASSWORD_DO_NOT_MATCH,
   CONFIRM_EMAIL,
   NON_EXISTENT_USER,
-} from "../utils/messages";
+} from '../utils/messages';
 
 export class SignInService {
   constructor(
@@ -23,10 +23,7 @@ export class SignInService {
     }
 
     if (!user.confirmed) {
-      await this.sendEmailConfirmEmailService.execute(
-        user.username,
-        user.email,
-      );
+      await this.sendEmailConfirmEmailService.execute(user.username, user.email);
       throw new UnauthorizedError(CONFIRM_EMAIL);
     }
 

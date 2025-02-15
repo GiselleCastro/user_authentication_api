@@ -1,8 +1,8 @@
-import type { UserRepository } from "../repositories/User";
-import type { RefreshTokenRepository } from "../repositories/RefreshToken";
-import { BadRequestError } from "../config/BaseError";
-import { UUID } from "../@types";
-import { NON_EXISTENT_USER } from "../utils/messages";
+import type { UserRepository } from '../repositories/User';
+import type { RefreshTokenRepository } from '../repositories/RefreshToken';
+import { BadRequestError } from '../config/BaseError';
+import { UUID } from '../@types';
+import { NON_EXISTENT_USER } from '../utils/messages';
 
 export class InvalidateRefreshTokenService {
   constructor(

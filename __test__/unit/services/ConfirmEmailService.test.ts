@@ -1,19 +1,15 @@
-import { UserRepository } from "../../../src/repositories/User";
-import { ConfirmEmailService } from "../../../src/service/ConfirmEmail";
-import { faker } from "@faker-js/faker";
-import {
-  BadRequestError,
-  UnauthorizedError,
-} from "../../../src/config/BaseError";
-import { UUID } from "../../../src/@types";
-import { validationToken } from "../../../src/utils/validationToken";
+import { UserRepository } from '../../../src/repositories/User';
+import { ConfirmEmailService } from '../../../src/service/ConfirmEmail';
+import { faker } from '@faker-js/faker';
+import { BadRequestError, UnauthorizedError } from '../../../src/config/BaseError';
+import { UUID } from '../../../src/@types';
+import { validationToken } from '../../../src/utils/validationToken';
 
-jest.mock("../../../src/repositories/User");
-jest.mock("../../../src/utils/validationToken");
+jest.mock('../../../src/repositories/User');
+jest.mock('../../../src/utils/validationToken');
 
 const makeSut = () => {
-  const userRepositoryStub =
-    new UserRepository() as jest.Mocked<UserRepository>;
+  const userRepositoryStub = new UserRepository() as jest.Mocked<UserRepository>;
   const sut = new ConfirmEmailService(userRepositoryStub);
 
   return {
@@ -22,10 +18,10 @@ const makeSut = () => {
   };
 };
 
-describe("ConfirmEmailService", () => {
-  it("Email confirmed successfully", async () => {
+describe('ConfirmEmailService', () => {
+  it('Email confirmed successfully', async () => {
     const { sut, userRepositoryStub } = makeSut();
-    const passwordMock = "A@#z123457890";
+    const passwordMock = 'A@#z123457890';
     const idMock = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const tokenMock = faker.string.alphanumeric(10);
@@ -48,9 +44,9 @@ describe("ConfirmEmailService", () => {
     expect(userRepositoryStub.confirmEmail).toHaveBeenCalledWith(loginMock);
   });
 
-  it("should return bad request if email has already been confirmed", async () => {
+  it('should return bad request if email has already been confirmed', async () => {
     const { sut, userRepositoryStub } = makeSut();
-    const passwordMock = "A@#z123457890";
+    const passwordMock = 'A@#z123457890';
     const idMock = faker.string.uuid() as unknown as UUID;
     const usernameMock = faker.person.firstName();
     const tokenMock = faker.string.alphanumeric(10);
@@ -68,51 +64,43 @@ describe("ConfirmEmailService", () => {
 
     userRepositoryStub.confirmEmail.mockResolvedValueOnce(1);
 
-    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(
-      BadRequestError,
-    );
+    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(BadRequestError);
     expect(userRepositoryStub.getUserByLogin).toHaveBeenCalledWith(loginMock);
   });
 
-  it("should return bad request if not found to get for email by token", async () => {
+  it('should return bad request if not found to get for email by token', async () => {
     const { sut, userRepositoryStub } = makeSut();
     const tokenMock = faker.string.alphanumeric(10);
     const loginMock = faker.internet.email();
 
     (validationToken as jest.Mock).mockResolvedValueOnce({ email: loginMock });
 
-    userRepositoryStub.getUserByLogin.mockImplementationOnce(
-      async () => undefined,
-    );
+    userRepositoryStub.getUserByLogin.mockImplementationOnce(async () => undefined);
 
-    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(
-      BadRequestError,
-    );
+    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(BadRequestError);
     expect(userRepositoryStub.getUserByLogin).toHaveBeenCalledWith(loginMock);
   });
 
-  it("should return unauthorized error for invalid token", async () => {
+  it('should return unauthorized error for invalid token', async () => {
     async () => {
       const { sut } = makeSut();
       const tokenMock = faker.string.alphanumeric(10);
 
       (validationToken as jest.Mock).mockRejectedValueOnce(
-        new UnauthorizedError("error"),
+        new UnauthorizedError('error'),
       );
 
       await expect(sut.execute(tokenMock)).rejects.toThrow(UnauthorizedError);
     };
   });
 
-  it("should return bad request if there is no mail property in the token", async () => {
+  it('should return bad request if there is no mail property in the token', async () => {
     const { sut, userRepositoryStub } = makeSut();
     const tokenMock = faker.string.alphanumeric(10);
 
-    (validationToken as jest.Mock).mockResolvedValueOnce({ other: "" });
+    (validationToken as jest.Mock).mockResolvedValueOnce({ other: '' });
 
-    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(
-      UnauthorizedError,
-    );
+    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(UnauthorizedError);
     expect(userRepositoryStub.getUserByLogin).not.toHaveBeenCalled();
   });
 });

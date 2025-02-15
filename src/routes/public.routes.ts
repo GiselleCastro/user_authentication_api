@@ -1,13 +1,13 @@
-import type { FastifyInstance } from "fastify";
-import * as middleware from "../middleware/index";
-import * as controller from "../controllers/Factory.controller";
-import * as types from "../@types";
-import * as schemasSwagger from "../docs/swagger";
+import type { FastifyInstance } from 'fastify';
+import * as middleware from '../middleware/index';
+import * as controller from '../controllers/Factory.controller';
+import * as types from '../@types';
+import * as schemasSwagger from '../docs/swagger';
 
 export const publicRoutes = async (fastify: FastifyInstance) => {
   fastify.post<{
     Body: types.CreateUser;
-  }>("/register", {
+  }>('/register', {
     schema: schemasSwagger.createUser,
     preHandler: [middleware.validateCreateUserInput],
     handler: controller.createUserController.handler,
@@ -15,7 +15,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
 
   fastify.post<{
     Body: types.Login;
-  }>("/login", {
+  }>('/login', {
     schema: schemasSwagger.login,
     preHandler: [middleware.validateLoginInput],
     handler: controller.loginController.handler,
@@ -23,7 +23,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
 
   fastify.post<{
     Body: types.LoginToRecoverPassword;
-  }>("/forgot-password", {
+  }>('/forgot-password', {
     schema: schemasSwagger.forgotPassword,
     preHandler: [middleware.validateLoginToRecoverPasswordInput],
     handler: controller.sendEmailResetPasswordController.handler,
@@ -32,18 +32,15 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   fastify.post<{
     Body: types.NewPassword;
     Querystring: types.Token;
-  }>("/reset-password", {
+  }>('/reset-password', {
     schema: schemasSwagger.resetPassword,
-    preHandler: [
-      middleware.validateTokenInput,
-      middleware.validateNewPasswordInput,
-    ],
+    preHandler: [middleware.validateTokenInput, middleware.validateNewPasswordInput],
     handler: controller.resetPasswordController.handler,
   });
 
   fastify.get<{
     Querystring: types.Token;
-  }>("/confirm-email", {
+  }>('/confirm-email', {
     schema: schemasSwagger.confirmEmail,
     preHandler: [middleware.validateTokenInput],
     handler: controller.confirmEmailController.handler,
@@ -51,7 +48,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
 
   fastify.post<{
     Body: types.AccessTokenAndRefreshToken;
-  }>("/refresh-token", {
+  }>('/refresh-token', {
     schema: schemasSwagger.newAccessTokenAndRefreshToken,
     preHandler: [
       middleware.validateAccessTokenAndRefreshToken,

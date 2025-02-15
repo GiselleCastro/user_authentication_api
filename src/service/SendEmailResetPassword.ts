@@ -1,23 +1,20 @@
-import jwt from "jsonwebtoken";
-import ejs from "ejs";
-import path from "path";
-import randomstring from "randomstring";
-import { SendEmailService } from "../config/EmailSending.config";
-import { ResetPasswordRepository } from "../repositories/ResetPassword";
-import { UserRepository } from "../repositories/User";
-import { constants } from "../config/constants";
-import { BaseEntity } from "../config/BaseEntity";
-import { BadRequestError } from "../config/BaseError";
-import { createToken } from "../utils/createToken";
+import ejs from 'ejs';
+import path from 'path';
+import { SendEmailService } from '../config/EmailSending.config';
+import { ResetPasswordRepository } from '../repositories/ResetPassword';
+import { UserRepository } from '../repositories/User';
+import { constants } from '../config/constants';
+import { BaseEntity } from '../config/BaseEntity';
+import { BadRequestError } from '../config/BaseError';
+import { createToken } from '../utils/createToken';
 import {
   EMAIL_NOT_SENT,
   EMAIL_TEMPLATE_NOT_RENDERED,
   NON_EXISTENT_USER,
-} from "../utils/messages";
-import { UUID } from "../@types";
+} from '../utils/messages';
+import { UUID } from '../@types';
 
-const { SECRET_FORGET_PASSWORD, EXPIRES_IN_TOKEN_RESET_PASSWORD, BASE_URL } =
-  constants;
+const { SECRET_FORGET_PASSWORD, EXPIRES_IN_TOKEN_RESET_PASSWORD, BASE_URL } = constants;
 
 export class SendEmailResetPasswordService extends BaseEntity {
   constructor(
@@ -58,7 +55,7 @@ export class SendEmailResetPasswordService extends BaseEntity {
     );
 
     await ejs
-      .renderFile(path.join(__dirname, "../templates/emailResetPassword.ejs"), {
+      .renderFile(path.join(__dirname, '../templates/emailResetPassword.ejs'), {
         username: username,
         email: email,
         link: `${BASE_URL}/reset-password?token=${token}`,
@@ -66,7 +63,7 @@ export class SendEmailResetPasswordService extends BaseEntity {
       })
       .then(async (result) => {
         await this.sendEmailService
-          .sendEmail(email, "Password Recovery Instructions", result)
+          .sendEmail(email, 'Password Recovery Instructions', result)
           .catch((error) => {
             this.logger.error(EMAIL_NOT_SENT, error, { username, email });
             this.handlerError.badRequestError(EMAIL_NOT_SENT);

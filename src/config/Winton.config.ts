@@ -1,6 +1,6 @@
-import { constants } from "./constants";
-import winston from "winston";
-import { Environment, LogLevel } from "../enum/index";
+import { constants } from './constants';
+import winston from 'winston';
+import { Environment, LogLevel } from '../enum/index';
 
 const { ENVIRONMENT_ENV, LOGGER_LEVEL, LOGGER_SERVICE_NAME } = constants;
 
@@ -20,10 +20,7 @@ export class WintonConfig {
       );
     }
 
-    return winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json(),
-    );
+    return winston.format.combine(winston.format.timestamp(), winston.format.json());
   }
 
   createLogger(functionName: string) {
@@ -42,16 +39,16 @@ export class WintonConfig {
       transports: [
         new winston.transports.Console(),
         new winston.transports.File({
-          filename: "./logs/.log",
+          filename: './logs/.log',
           level: LogLevel.INFO,
         }),
         new winston.transports.File({
-          filename: "./logs/errors.log",
+          filename: './logs/errors.log',
           level: LogLevel.ERROR,
         }),
       ],
       exceptionHandlers: [
-        new winston.transports.File({ filename: "./logs/exceptions.log" }),
+        new winston.transports.File({ filename: './logs/exceptions.log' }),
       ],
       exitOnError: false,
     });

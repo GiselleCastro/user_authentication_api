@@ -1,10 +1,10 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import { z } from "zod";
-import { ParameterType } from "../enum/index";
-import { BadRequestError } from "../config/BaseError";
-import { BaseEntity } from "../config/BaseEntity";
-import { ERROR_VALIDATION, INTERNAL_SERVER_ERROR } from "../utils/messages";
-import httpStatusCode from "http-status-codes";
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import { z } from 'zod';
+import { ParameterType } from '../enum/index';
+import { BadRequestError } from '../config/BaseError';
+import { BaseEntity } from '../config/BaseEntity';
+import { ERROR_VALIDATION, INTERNAL_SERVER_ERROR } from '../utils/messages';
+import httpStatusCode from 'http-status-codes';
 
 export class ValidateSchemaMiddleware extends BaseEntity {
   handle(schema: z.AnyZodObject, parameterType: ParameterType) {
@@ -14,10 +14,7 @@ export class ValidateSchemaMiddleware extends BaseEntity {
       } catch (error) {
         if (error instanceof z.ZodError) {
           const errorZod = error.issues.map((e) => e.message);
-          const { code, ...infoError } = new BadRequestError(
-            ERROR_VALIDATION,
-            errorZod,
-          );
+          const { code, ...infoError } = new BadRequestError(ERROR_VALIDATION, errorZod);
           return reply.status(code).send(infoError);
         }
 

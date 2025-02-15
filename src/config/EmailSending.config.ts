@@ -1,9 +1,9 @@
-import nodemailer from "nodemailer";
-import { constants } from "./constants";
-import { BaseEntity } from "./BaseEntity";
-import { BadRequestError } from "./BaseError";
-import { google } from "googleapis";
-import { EMAIL_NOT_SENT } from "../utils/messages";
+import nodemailer from 'nodemailer';
+import { constants } from './constants';
+import { BaseEntity } from './BaseEntity';
+import { BadRequestError } from './BaseError';
+import { google } from 'googleapis';
+import { EMAIL_NOT_SENT } from '../utils/messages';
 
 const {
   SENDER_EMAIL_ID,
@@ -27,9 +27,9 @@ export class SendEmailService extends BaseEntity {
   private async setTransporter() {
     const accessToken = await oAuth2Client.getAccessToken();
     return nodemailer.createTransport({
-      service: "gmail",
+      service: 'gmail',
       auth: {
-        type: "OAuth2",
+        type: 'OAuth2',
         user: SENDER_EMAIL,
         clientId: SENDER_EMAIL_ID,
         clientSecret: SENDER_EMAIL_SECRET,
@@ -40,7 +40,7 @@ export class SendEmailService extends BaseEntity {
   }
   async sendEmail(email: string, mailSubject: string, content: string) {
     const transport = await this.setTransporter();
-    transport.set("oauth2_provision_cb", async (user, renew, cb) => {
+    transport.set('oauth2_provision_cb', async (user, renew, cb) => {
       try {
         const accessToken = await oAuth2Client.getAccessToken();
         cb(null, accessToken as string);

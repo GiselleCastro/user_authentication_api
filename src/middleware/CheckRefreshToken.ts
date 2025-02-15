@@ -1,10 +1,10 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import { constants } from "../config/constants";
-import { BadRequestError, BaseError } from "../config/BaseError";
-import * as types from "../@types";
-import { NO_TOKEN_ACCESS, INTERNAL_SERVER_ERROR } from "../utils/messages";
-import { validationToken } from "../utils/validationToken";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import { constants } from '../config/constants';
+import { BadRequestError, BaseError } from '../config/BaseError';
+import * as types from '../@types';
+import { NO_TOKEN_ACCESS, INTERNAL_SERVER_ERROR } from '../utils/messages';
+import { validationToken } from '../utils/validationToken';
+import HttpStatusCode from 'http-status-codes';
 
 const { SECRET_REFRESH_TOKEN } = constants;
 

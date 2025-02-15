@@ -1,10 +1,10 @@
-import { Logger } from "./Logger";
-import { HandlerError } from "./HandlerError";
-import { BaseError } from "./BaseError";
-import { INTERNAL_SERVER_ERROR } from "../utils/messages";
-import type { FastifyReply } from "fastify";
+import { Logger } from './Logger';
+import { HandlerError } from './HandlerError';
+import { BaseError } from './BaseError';
+import { INTERNAL_SERVER_ERROR } from '../utils/messages';
+import type { FastifyReply } from 'fastify';
 
-import HttpStatusCode from "http-status-codes";
+import HttpStatusCode from 'http-status-codes';
 export abstract class BaseEntity {
   protected readonly logger: Logger;
   protected readonly handlerError: HandlerError;

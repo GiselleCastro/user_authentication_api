@@ -1,14 +1,14 @@
-import type { FastifyInstance } from "fastify/types/instance";
-import { ResetPasswordService } from "../../../src/service/ResetPassword";
-import { buildServer } from "../../../src/server";
-import { faker } from "@faker-js/faker";
-import { BadRequestError } from "../../../src/config/BaseError";
-import { ERROR_VALIDATION } from "../../../src/utils/messages";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyInstance } from 'fastify/types/instance';
+import { ResetPasswordService } from '../../../src/service/ResetPassword';
+import { buildServer } from '../../../src/server';
+import { faker } from '@faker-js/faker';
+import { BadRequestError } from '../../../src/config/BaseError';
+import { ERROR_VALIDATION } from '../../../src/utils/messages';
+import HttpStatusCode from 'http-status-codes';
 
-jest.mock("../../../src/service/ResetPassword");
+jest.mock('../../../src/service/ResetPassword');
 
-describe("POST /reset-password", () => {
+describe('POST /reset-password', () => {
   let serverStub: FastifyInstance;
 
   beforeAll(async () => {
@@ -19,7 +19,7 @@ describe("POST /reset-password", () => {
     await serverStub.close();
   });
 
-  it("Password updated successfully", async () => {
+  it('Password updated successfully', async () => {
     const tokenQuery = { token: faker.string.alphanumeric(30) };
     const passwordInput = {
       password: faker.internet.password(),
@@ -29,18 +29,18 @@ describe("POST /reset-password", () => {
     };
 
     const resetPasswordServiceSpy = jest
-      .spyOn(ResetPasswordService.prototype, "execute")
+      .spyOn(ResetPasswordService.prototype, 'execute')
       .mockResolvedValue();
 
     const response = await serverStub.inject({
-      method: "POST",
-      url: "/reset-password",
+      method: 'POST',
+      url: '/reset-password',
       query: tokenQuery,
       payload: passwordInput,
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.NO_CONTENT);
-    expect(response.body).toEqual("");
+    expect(response.body).toEqual('');
     expect(resetPasswordServiceSpy).toHaveBeenCalledWith(
       tokenQuery.token,
       ...Object.values(passwordInput),
@@ -49,29 +49,27 @@ describe("POST /reset-password", () => {
     resetPasswordServiceSpy.mockRestore();
   });
 
-  it("Error updating password", async () => {
+  it('Error updating password', async () => {
     const tokenQuery = { token: faker.string.alphanumeric(30) };
     const passwordInput = {
       password: faker.internet.password(),
       confirmPassword: faker.internet.password(),
     };
 
-    const messageError = "error";
+    const messageError = 'error';
     const resetPasswordServiceSpy = jest
-      .spyOn(ResetPasswordService.prototype, "execute")
+      .spyOn(ResetPasswordService.prototype, 'execute')
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({
-      method: "POST",
-      url: "/reset-password",
+      method: 'POST',
+      url: '/reset-password',
       query: tokenQuery,
       payload: passwordInput,
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
-    expect(response.headers["content-type"]).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
     expect(response.json()).toEqual({ message: messageError });
     expect(resetPasswordServiceSpy).toHaveBeenCalledWith(
       tokenQuery.token,
@@ -81,23 +79,23 @@ describe("POST /reset-password", () => {
     resetPasswordServiceSpy.mockRestore();
   });
 
-  it("Error validation - example: password cannot be empty", async () => {
+  it('Error validation - example: password cannot be empty', async () => {
     const tokenQuery = { token: faker.string.alphanumeric(30) };
     const passwordInput = {
-      password: "",
+      password: '',
       confirmPassword: faker.internet.password(),
     };
 
     const response = await serverStub.inject({
-      method: "POST",
-      url: "/reset-password",
+      method: 'POST',
+      url: '/reset-password',
       query: tokenQuery,
       payload: passwordInput,
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
     expect(response.json()).toEqual({
-      details: ["String must contain at least 1 character(s)"],
+      details: ['String must contain at least 1 character(s)'],
       message: ERROR_VALIDATION,
     });
   });

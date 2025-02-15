@@ -1,8 +1,8 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import type { ResetPasswordService } from "../service/ResetPassword";
-import { BaseEntity } from "../config/BaseEntity";
-import * as types from "../@types";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { ResetPasswordService } from '../service/ResetPassword';
+import { BaseEntity } from '../config/BaseEntity';
+import * as types from '../@types';
+import HttpStatusCode from 'http-status-codes';
 
 export class ResetPasswordController extends BaseEntity {
   constructor(private readonly resetPasswordService: ResetPasswordService) {

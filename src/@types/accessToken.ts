@@ -1,4 +1,4 @@
-import { UUID } from ".";
+import { UUID } from '.';
 
 export type Authorization = {
   id: UUID;

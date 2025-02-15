@@ -1,5 +1,5 @@
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
-import { UnauthorizedError } from "../config/BaseError";
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import { UnauthorizedError } from '../config/BaseError';
 
 export const validationToken = (token: string, secret: string) =>
   new Promise((resolve, reject) => {

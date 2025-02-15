@@ -4,7 +4,7 @@ import {
   UnauthorizedError,
   ForbiddenError,
   UnprocessableEntityError,
-} from "./BaseError";
+} from './BaseError';
 
 export class HandlerError {
   badRequestError(message: string, details?: string[]) {

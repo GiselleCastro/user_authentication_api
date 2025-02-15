@@ -1,8 +1,8 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import type { GenerateRefreshTokenAndAccessTokenService } from "../service/GenerateRefreshTokenAndAccessToken";
-import { BaseEntity } from "../config/BaseEntity";
-import * as types from "../@types";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { GenerateRefreshTokenAndAccessTokenService } from '../service/GenerateRefreshTokenAndAccessToken';
+import { BaseEntity } from '../config/BaseEntity';
+import * as types from '../@types';
+import HttpStatusCode from 'http-status-codes';
 
 export class NewAccessTokenAndRefreshTokenController extends BaseEntity {
   constructor(
@@ -21,12 +21,11 @@ export class NewAccessTokenAndRefreshTokenController extends BaseEntity {
     const { accessToken, refreshToken } = request.body;
 
     try {
-      const tokens =
-        await this.generateRefreshTokenAndAccessTokenService.execute(
-          userId,
-          accessToken,
-          refreshToken,
-        );
+      const tokens = await this.generateRefreshTokenAndAccessTokenService.execute(
+        userId,
+        accessToken,
+        refreshToken,
+      );
       return reply.code(HttpStatusCode.OK).send(tokens);
     } catch (error) {
       this.handlerErrorController(error, reply);

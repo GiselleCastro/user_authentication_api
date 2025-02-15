@@ -1,14 +1,14 @@
-import type { UserRepository } from "../repositories/User";
-import type { RefreshTokenRepository } from "../repositories/RefreshToken";
-import { TokenExpiredError } from "jsonwebtoken";
-import { constants } from "../config/constants";
-import { BadRequestError, UnauthorizedError } from "../config/BaseError";
-import { TokenJSON, Authorization, UUID, RefresTokenJSON } from "../@types";
-import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid";
-import { createToken } from "../utils/createToken";
-import { validationToken } from "../utils/validationToken";
-import { EXPIRED_TOKEN, NON_EXISTENT_USER } from "../utils/messages";
+import type { UserRepository } from '../repositories/User';
+import type { RefreshTokenRepository } from '../repositories/RefreshToken';
+import { TokenExpiredError } from 'jsonwebtoken';
+import { constants } from '../config/constants';
+import { BadRequestError, UnauthorizedError } from '../config/BaseError';
+import { TokenJSON, Authorization, UUID, RefresTokenJSON } from '../@types';
+import bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
+import { createToken } from '../utils/createToken';
+import { validationToken } from '../utils/validationToken';
+import { EXPIRED_TOKEN, NON_EXISTENT_USER } from '../utils/messages';
 
 const {
   SECRET_TOKEN_ACCESS,
@@ -23,11 +23,7 @@ export class GenerateRefreshTokenAndAccessTokenService {
     private readonly refreshTokenRepository: RefreshTokenRepository,
   ) {}
 
-  async execute(
-    userId: UUID,
-    accessToken: string = "",
-    refreshToken: string = "",
-  ) {
+  async execute(userId: UUID, accessToken: string = '', refreshToken: string = '') {
     const user = await this.userRepository.getUserById(userId);
 
     if (!user) {
@@ -35,10 +31,7 @@ export class GenerateRefreshTokenAndAccessTokenService {
     }
 
     if (accessToken && refreshToken) {
-      const accessTokenDecoded = await validationToken(
-        accessToken,
-        SECRET_TOKEN_ACCESS,
-      )
+      const accessTokenDecoded = await validationToken(accessToken, SECRET_TOKEN_ACCESS)
         .then((result) => result as TokenJSON)
         .catch((e) => {
           if (e.message === TokenExpiredError.name) {
@@ -63,9 +56,7 @@ export class GenerateRefreshTokenAndAccessTokenService {
 
       if (!isValidRefreshToken) throw new UnauthorizedError(EXPIRED_TOKEN);
 
-      await this.deleteRefreshTokenByRefreshTokenId(
-        refreshTokenDecoded.tokenId as UUID,
-      );
+      await this.deleteRefreshTokenByRefreshTokenId(refreshTokenDecoded.tokenId as UUID);
     } else {
       await this.deleteRefreshTokenByUserId(userId);
     }
@@ -105,7 +96,7 @@ export class GenerateRefreshTokenAndAccessTokenService {
     const payload: RefresTokenJSON = {
       tokenId: refreshTokenId,
       id: userId,
-      tokenType: "rt+jwt",
+      tokenType: 'rt+jwt',
       lastUsedAt: Date.now(),
     };
 
@@ -143,10 +134,7 @@ export class GenerateRefreshTokenAndAccessTokenService {
     await this.refreshTokenRepository.deleteRefreshTokenByUserId(userId);
   }
 
-  private async isValidRefreshToken(
-    refreshTokenId: UUID,
-    refreshToken: string,
-  ) {
+  private async isValidRefreshToken(refreshTokenId: UUID, refreshToken: string) {
     const refreshTokenDB =
       await this.refreshTokenRepository.getRefreshTokenById(refreshTokenId);
     if (!refreshTokenDB) throw new BadRequestError(EXPIRED_TOKEN);

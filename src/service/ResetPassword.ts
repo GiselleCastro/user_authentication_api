@@ -1,14 +1,11 @@
-import type { ResetPasswordRepository } from "../repositories/ResetPassword";
-import type { UserRepository } from "../repositories/User";
-import { getPasswordHash } from "../utils/passwordHash";
-import {
-  UnauthorizedError,
-  UnprocessableEntityError,
-} from "../config/BaseError";
-import { EXPIRED_TOKEN, TOKEN_ALREADY_USED } from "../utils/messages";
-import { constants } from "../config/constants";
-import { validationToken } from "../utils/validationToken";
-import { UUID } from "../@types";
+import type { ResetPasswordRepository } from '../repositories/ResetPassword';
+import type { UserRepository } from '../repositories/User';
+import { getPasswordHash } from '../utils/passwordHash';
+import { UnauthorizedError, UnprocessableEntityError } from '../config/BaseError';
+import { EXPIRED_TOKEN, TOKEN_ALREADY_USED } from '../utils/messages';
+import { constants } from '../config/constants';
+import { validationToken } from '../utils/validationToken';
+import { UUID } from '../@types';
 
 const { SECRET_FORGET_PASSWORD } = constants;
 
@@ -22,10 +19,10 @@ export class ResetPasswordService {
     const decode = await validationToken(token, SECRET_FORGET_PASSWORD);
 
     if (
-      typeof decode === "object" &&
+      typeof decode === 'object' &&
       decode !== null &&
-      "id" in decode &&
-      typeof decode.id === "string"
+      'id' in decode &&
+      typeof decode.id === 'string'
     ) {
       const tokenAndLoginByUserId =
         await this.resetPasswordRepository.getTokenAndLoginByUserId(
@@ -37,14 +34,9 @@ export class ResetPasswordService {
 
       const passwordHash = await getPasswordHash(password, confirmPassword);
 
-      await this.userRepository.updatePassword(
-        tokenAndLoginByUserId.login,
-        passwordHash,
-      );
+      await this.userRepository.updatePassword(tokenAndLoginByUserId.login, passwordHash);
 
-      await this.resetPasswordRepository.deleteToken(
-        decode.id as unknown as UUID,
-      );
+      await this.resetPasswordRepository.deleteToken(decode.id as unknown as UUID);
     } else {
       throw new UnauthorizedError(EXPIRED_TOKEN);
     }

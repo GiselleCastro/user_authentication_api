@@ -1,8 +1,8 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
-import type { InvalidateRefreshTokenService } from "../service/InvalidateRefreshToken";
-import { Access, UUID } from "../@types";
-import { BaseEntity } from "../config/BaseEntity";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { InvalidateRefreshTokenService } from '../service/InvalidateRefreshToken';
+import { Access, UUID } from '../@types';
+import { BaseEntity } from '../config/BaseEntity';
+import HttpStatusCode from 'http-status-codes';
 
 export class LogoutController extends BaseEntity {
   constructor(

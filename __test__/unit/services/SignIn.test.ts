@@ -1,26 +1,22 @@
-import { SignInService } from "../../../src/service/SignIn";
-import { UserRepository } from "../../../src/repositories/User";
-import { GenerateRefreshTokenAndAccessTokenService } from "../../../src/service/GenerateRefreshTokenAndAccessToken";
-import { SendEmailConfirmEmailService } from "../../../src/service/SendEmailConfirmEmail";
-import { RefreshTokenRepository } from "../../../src/repositories/RefreshToken";
-import { SendEmailService } from "../../../src/config/EmailSending.config";
+import { SignInService } from '../../../src/service/SignIn';
+import { UserRepository } from '../../../src/repositories/User';
+import { GenerateRefreshTokenAndAccessTokenService } from '../../../src/service/GenerateRefreshTokenAndAccessToken';
+import { SendEmailConfirmEmailService } from '../../../src/service/SendEmailConfirmEmail';
+import { RefreshTokenRepository } from '../../../src/repositories/RefreshToken';
+import { SendEmailService } from '../../../src/config/EmailSending.config';
 
-import { faker } from "@faker-js/faker";
-import { UUID } from "../../../src/@types";
-import {
-  BadRequestError,
-  UnauthorizedError,
-} from "../../../src/config/BaseError";
-import bcrypt from "bcrypt";
+import { faker } from '@faker-js/faker';
+import { UUID } from '../../../src/@types';
+import { BadRequestError, UnauthorizedError } from '../../../src/config/BaseError';
+import bcrypt from 'bcrypt';
 
-jest.mock("bcrypt");
-jest.mock("../../../src/repositories/User");
-jest.mock("../../../src/service/GenerateRefreshTokenAndAccessToken");
-jest.mock("../../../src/service/SendEmailConfirmEmail");
+jest.mock('bcrypt');
+jest.mock('../../../src/repositories/User');
+jest.mock('../../../src/service/GenerateRefreshTokenAndAccessToken');
+jest.mock('../../../src/service/SendEmailConfirmEmail');
 
 const makeSut = () => {
-  const userRepositoryStub =
-    new UserRepository() as jest.Mocked<UserRepository>;
+  const userRepositoryStub = new UserRepository() as jest.Mocked<UserRepository>;
   const generateRefreshTokenAndAccessTokenServiceStub =
     new GenerateRefreshTokenAndAccessTokenService(
       new UserRepository(),
@@ -44,16 +40,13 @@ const makeSut = () => {
   };
 };
 
-describe("SignInService", () => {
-  it("Access token and refresh token generated successfully", async () => {
-    const {
-      sut,
-      userRepositoryStub,
-      generateRefreshTokenAndAccessTokenServiceStub,
-    } = makeSut();
+describe('SignInService', () => {
+  it('Access token and refresh token generated successfully', async () => {
+    const { sut, userRepositoryStub, generateRefreshTokenAndAccessTokenServiceStub } =
+      makeSut();
     const usernameMock = faker.person.firstName();
     const loginMock = faker.internet.email();
-    const passwordMock = "A@#z123457890";
+    const passwordMock = 'A@#z123457890';
     const passwordHashMock = faker.string.alphanumeric(10);
     const accessTokenMock = faker.string.alphanumeric(10);
     const refreshTokenMock = faker.string.alphanumeric(10);
@@ -82,17 +75,14 @@ describe("SignInService", () => {
       refreshToken: refreshTokenMock,
     });
 
-    expect(
-      generateRefreshTokenAndAccessTokenServiceStub.execute,
-    ).toHaveBeenCalledWith(idMock);
+    expect(generateRefreshTokenAndAccessTokenServiceStub.execute).toHaveBeenCalledWith(
+      idMock,
+    );
   });
 
-  it("should return bad request error if passwords do not match", async () => {
-    const {
-      sut,
-      userRepositoryStub,
-      generateRefreshTokenAndAccessTokenServiceStub,
-    } = makeSut();
+  it('should return bad request error if passwords do not match', async () => {
+    const { sut, userRepositoryStub, generateRefreshTokenAndAccessTokenServiceStub } =
+      makeSut();
     const usernameMock = faker.person.firstName();
     const loginMock = faker.internet.email();
     const passwordMock = faker.internet.password();
@@ -113,17 +103,14 @@ describe("SignInService", () => {
       BadRequestError,
     );
     expect(userRepositoryStub.getUserByLogin).toHaveBeenCalledWith(loginMock);
-    expect(
-      generateRefreshTokenAndAccessTokenServiceStub.execute,
-    ).not.toHaveBeenCalled();
+    expect(generateRefreshTokenAndAccessTokenServiceStub.execute).not.toHaveBeenCalled();
   });
 
-  it("should return unauthorized error if user is already registered, but with unconfirmed email address", async () => {
-    const { sut, userRepositoryStub, sendEmailConfirmEmailServiceStub } =
-      makeSut();
+  it('should return unauthorized error if user is already registered, but with unconfirmed email address', async () => {
+    const { sut, userRepositoryStub, sendEmailConfirmEmailServiceStub } = makeSut();
     const usernameMock = faker.person.firstName();
     const loginMock = faker.internet.email();
-    const passwordMock = "A@#z123457890";
+    const passwordMock = 'A@#z123457890';
     const passwordHashMock = faker.string.alphanumeric(10);
     const idMock = faker.string.uuid() as unknown as UUID;
 
@@ -145,14 +132,12 @@ describe("SignInService", () => {
     );
   });
 
-  it("should return bad request error if non-existent user", async () => {
+  it('should return bad request error if non-existent user', async () => {
     const { sut, userRepositoryStub } = makeSut();
     const loginMock = faker.internet.email();
     const passwordMock = faker.internet.password();
 
-    userRepositoryStub.getUserByLogin.mockImplementationOnce(
-      async () => undefined,
-    );
+    userRepositoryStub.getUserByLogin.mockImplementationOnce(async () => undefined);
 
     await expect(sut.execute(loginMock, passwordMock)).rejects.toBeInstanceOf(
       BadRequestError,

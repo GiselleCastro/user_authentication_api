@@ -1,4 +1,4 @@
-import PasswordValidator from "password-validator";
+import PasswordValidator from 'password-validator';
 
 export const validationPassword = (password: string) => {
   const schema = new PasswordValidator();
@@ -21,8 +21,7 @@ export const validationPassword = (password: string) => {
 
   const isStrongPassword = checkPassword.validate(password);
 
-  if (typeof isStrongPassword === "boolean" && isStrongPassword)
-    return isStrongPassword;
+  if (typeof isStrongPassword === 'boolean' && isStrongPassword) return isStrongPassword;
 
   const detailsValidations = checkPassword.validate(password, {
     details: true,

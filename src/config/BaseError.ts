@@ -1,4 +1,4 @@
-import HttpStatusCode, { StatusCodes } from "http-status-codes";
+import HttpStatusCode, { StatusCodes } from 'http-status-codes';
 
 export abstract class BaseError {
   code: StatusCodes = HttpStatusCode.BAD_REQUEST;

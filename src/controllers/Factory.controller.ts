@@ -1,12 +1,12 @@
-import { ChangePasswordController } from "./ChangePassword";
-import { CreateUserController } from "./CreateUser";
-import { LoginController } from "./Login";
-import { ResetPasswordController } from "./ResetPassword";
-import { ConfirmEmailController } from "./ConfirmEmail";
-import { SendEmailResetPasswordController } from "./SendEmailResetPassword";
-import { NewAccessTokenAndRefreshTokenController } from "./NewAccessTokenAndRefreshToken";
-import { LogoutController } from "./Logout";
-import * as factory from "../service/Factory.service";
+import { ChangePasswordController } from './ChangePassword';
+import { CreateUserController } from './CreateUser';
+import { LoginController } from './Login';
+import { ResetPasswordController } from './ResetPassword';
+import { ConfirmEmailController } from './ConfirmEmail';
+import { SendEmailResetPasswordController } from './SendEmailResetPassword';
+import { NewAccessTokenAndRefreshTokenController } from './NewAccessTokenAndRefreshToken';
+import { LogoutController } from './Logout';
+import * as factory from '../service/Factory.service';
 
 class ChangePasswordControllerFactory {
   static make(): ChangePasswordController {
@@ -78,4 +78,3 @@ class NewAccessTokenAndRefreshTokenControllerFactory {
 }
 export const newAccessTokenAndRefreshTokenController =
   NewAccessTokenAndRefreshTokenControllerFactory.make();
-NewAccessTokenAndRefreshTokenController;

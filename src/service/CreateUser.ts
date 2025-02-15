@@ -1,8 +1,8 @@
-import type { UserRepository } from "../repositories/User";
-import type { SendEmailConfirmEmailService } from "./SendEmailConfirmEmail";
-import { getPasswordHash } from "../utils/passwordHash";
-import { BadRequestError, UnauthorizedError } from "../config/BaseError";
-import { USER_ALREADY_REGISTERED, CONFIRM_EMAIL } from "../utils/messages";
+import type { UserRepository } from '../repositories/User';
+import type { SendEmailConfirmEmailService } from './SendEmailConfirmEmail';
+import { getPasswordHash } from '../utils/passwordHash';
+import { BadRequestError, UnauthorizedError } from '../config/BaseError';
+import { USER_ALREADY_REGISTERED, CONFIRM_EMAIL } from '../utils/messages';
 
 export class CreateUserService {
   constructor(
@@ -27,9 +27,7 @@ export class CreateUserService {
 
     if (!!userRegister && !userRegister.confirmed) {
       await this.sendEmailConfirmEmail.execute(username, email);
-      throw new UnauthorizedError(
-        `${USER_ALREADY_REGISTERED} - ${CONFIRM_EMAIL}`,
-      );
+      throw new UnauthorizedError(`${USER_ALREADY_REGISTERED} - ${CONFIRM_EMAIL}`);
     }
 
     const passwordHash = await getPasswordHash(password, confirmPassword);

@@ -1,12 +1,12 @@
-import type { UserRepository } from "../repositories/User";
-import { BadRequestError, UnauthorizedError } from "../config/BaseError";
+import type { UserRepository } from '../repositories/User';
+import { BadRequestError, UnauthorizedError } from '../config/BaseError';
 import {
   NON_EXISTENT_USER,
   EMAIL_ALREADY_CONFIRMED,
   EXPIRED_TOKEN,
-} from "../utils/messages";
-import { constants } from "../config/constants";
-import { validationToken } from "../utils/validationToken";
+} from '../utils/messages';
+import { constants } from '../config/constants';
+import { validationToken } from '../utils/validationToken';
 
 const { SECRET_CONFIRM_EMAIL } = constants;
 
@@ -17,10 +17,10 @@ export class ConfirmEmailService {
     const decode = await validationToken(token, SECRET_CONFIRM_EMAIL);
 
     if (
-      typeof decode === "object" &&
+      typeof decode === 'object' &&
       decode !== null &&
-      "email" in decode &&
-      typeof decode.email === "string"
+      'email' in decode &&
+      typeof decode.email === 'string'
     ) {
       const userEmail = decode.email;
 

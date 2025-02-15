@@ -1,9 +1,9 @@
-import { CheckAutheticationMiddleware } from "./CheckAuthetication";
-import { ValidateSchemaMiddleware } from "./ValidateSchema";
-import { ParameterType } from "../enum/index";
-import { CheckAuthorizationMiddleware } from "./CheckAuthorization";
-import { CheckRefreshTokenMiddleware } from "./CheckRefreshToken";
-import * as Schema from "../schema";
+import { CheckAutheticationMiddleware } from './CheckAuthetication';
+import { ValidateSchemaMiddleware } from './ValidateSchema';
+import { ParameterType } from '../enum/index';
+import { CheckAuthorizationMiddleware } from './CheckAuthorization';
+import { CheckRefreshTokenMiddleware } from './CheckRefreshToken';
+import * as Schema from '../schema';
 
 export const checkAuthetication = new CheckAutheticationMiddleware().handle;
 

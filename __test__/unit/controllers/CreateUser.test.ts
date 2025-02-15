@@ -1,14 +1,14 @@
-import type { FastifyInstance } from "fastify/types/instance";
-import { CreateUserService } from "../../../src/service/CreateUser";
-import { buildServer } from "../../../src/server";
-import { faker } from "@faker-js/faker";
-import { BadRequestError } from "../../../src/config/BaseError";
-import { ERROR_VALIDATION } from "../../../src/utils/messages";
-import HttpStatusCode from "http-status-codes";
+import type { FastifyInstance } from 'fastify/types/instance';
+import { CreateUserService } from '../../../src/service/CreateUser';
+import { buildServer } from '../../../src/server';
+import { faker } from '@faker-js/faker';
+import { BadRequestError } from '../../../src/config/BaseError';
+import { ERROR_VALIDATION } from '../../../src/utils/messages';
+import HttpStatusCode from 'http-status-codes';
 
-jest.mock("../../../src/service/CreateUser");
+jest.mock('../../../src/service/CreateUser');
 
-describe("POST /register", () => {
+describe('POST /register', () => {
   let serverStub: FastifyInstance;
 
   beforeAll(async () => {
@@ -19,7 +19,7 @@ describe("POST /register", () => {
     await serverStub.close();
   });
 
-  it("User created successfully", async () => {
+  it('User created successfully', async () => {
     const createUserInput = {
       username: faker.person.firstName(),
       email: faker.internet.email(),
@@ -30,17 +30,17 @@ describe("POST /register", () => {
     };
 
     const createCreateUserServiceSpy = jest
-      .spyOn(CreateUserService.prototype, "execute")
+      .spyOn(CreateUserService.prototype, 'execute')
       .mockResolvedValue();
 
     const response = await serverStub.inject({
-      method: "POST",
-      url: "/register",
+      method: 'POST',
+      url: '/register',
       payload: createUserInput,
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.CREATED);
-    expect(response.body).toBe("");
+    expect(response.body).toBe('');
     expect(createCreateUserServiceSpy).toHaveBeenCalledWith(
       ...Object.values(createUserInput),
     );
@@ -48,7 +48,7 @@ describe("POST /register", () => {
     createCreateUserServiceSpy.mockRestore();
   });
 
-  it("Error creating user", async () => {
+  it('Error creating user', async () => {
     const createUserInput = {
       username: faker.person.firstName(),
       email: faker.internet.email(),
@@ -56,21 +56,19 @@ describe("POST /register", () => {
       confirmPassword: faker.internet.password(),
     };
 
-    const messageError = "error";
+    const messageError = 'error';
     const createCreateUserServiceSpy = jest
-      .spyOn(CreateUserService.prototype, "execute")
+      .spyOn(CreateUserService.prototype, 'execute')
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({
-      method: "POST",
-      url: "/register",
+      method: 'POST',
+      url: '/register',
       payload: createUserInput,
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
-    expect(response.headers["content-type"]).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
     expect(response.json()).toEqual({ message: messageError });
     expect(createCreateUserServiceSpy).toHaveBeenCalledWith(
       ...Object.values(createUserInput),
@@ -79,23 +77,23 @@ describe("POST /register", () => {
     createCreateUserServiceSpy.mockRestore();
   });
 
-  it("Error validation - example: password cannot be empty", async () => {
+  it('Error validation - example: password cannot be empty', async () => {
     const createUserInput = {
       username: faker.person.firstName(),
       email: faker.internet.email(),
-      password: "",
+      password: '',
       confirmPassword: faker.internet.password(),
     };
 
     const response = await serverStub.inject({
-      method: "POST",
-      url: "/register",
+      method: 'POST',
+      url: '/register',
       payload: createUserInput,
     });
 
     expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
     expect(response.json()).toEqual({
-      details: ["String must contain at least 1 character(s)"],
+      details: ['String must contain at least 1 character(s)'],
       message: ERROR_VALIDATION,
     });
   });

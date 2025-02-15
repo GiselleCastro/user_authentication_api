@@ -1,5 +1,5 @@
-import "dotenv/config";
-import type { Environment, LogLevel } from "../enum/index";
+import 'dotenv/config';
+import type { Environment, LogLevel } from '../enum/index';
 
 export const constants = {
   SERVER_PORT: Number(process.env.SERVER_PORT),
@@ -10,17 +10,11 @@ export const constants = {
   SECRET_TOKEN_ACCESS: process.env.SECRET_TOKEN_ACCESS as string,
   EXPIRES_IN_TOKEN_ACCESS: Number(process.env.EXPIRES_IN_TOKEN_ACCESS),
   SECRET_REFRESH_TOKEN: process.env.SECRET_REFRESH_TOKEN as string,
-  EXPIRES_IN_TOKEN_REFRESH_TOKEN: Number(
-    process.env.EXPIRES_IN_TOKEN_REFRESH_TOKEN,
-  ),
+  EXPIRES_IN_TOKEN_REFRESH_TOKEN: Number(process.env.EXPIRES_IN_TOKEN_REFRESH_TOKEN),
   SECRET_CONFIRM_EMAIL: process.env.SECRET_CONFIRM_EMAIL as string,
-  EXPIRES_IN_TOKEN_CONFIRM_EMAIL: Number(
-    process.env.EXPIRES_IN_TOKEN_CONFIRM_EMAIL,
-  ),
+  EXPIRES_IN_TOKEN_CONFIRM_EMAIL: Number(process.env.EXPIRES_IN_TOKEN_CONFIRM_EMAIL),
   SECRET_FORGET_PASSWORD: process.env.SECRET_FORGET_PASSWORD as string,
-  EXPIRES_IN_TOKEN_RESET_PASSWORD: Number(
-    process.env.EXPIRES_IN_TOKEN_RESET_PASSWORD,
-  ),
+  EXPIRES_IN_TOKEN_RESET_PASSWORD: Number(process.env.EXPIRES_IN_TOKEN_RESET_PASSWORD),
   SENDER_EMAIL_ID: process.env.SENDER_EMAIL_ID as string,
   SENDER_EMAIL: process.env.SENDER_EMAIL as string,
   SENDER_EMAIL_SECRET: process.env.SENDER_EMAIL_SECRET as string,
