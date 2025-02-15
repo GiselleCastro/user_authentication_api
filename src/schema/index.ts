@@ -6,8 +6,7 @@ export const CreateUser = z.object({
   username: z
     .string()
     .trim()
-    .regex(/^[A-z-0-9]*$/)
-    .min(1),
+    .regex(/^[A-z-0-9]$/),
   email: z.string().trim().min(1).email(),
   password: z.string().trim().min(1),
   confirmPassword: z.string().trim().min(1),
