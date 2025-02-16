@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify/types/instance';
-import { ChangePassowrdService } from '../../../src/service/ChangePassword';
+import { ChangePasswordService } from '../../../src/service/ChangePassword';
 import { CheckAutheticationMiddleware } from '../../../src/middleware/CheckAuthetication';
 import { buildServer } from '../../../src/server';
 import { faker } from '@faker-js/faker';
@@ -22,8 +22,9 @@ describe('PATCH /my-account/change-password', () => {
     await serverStub.close();
   });
 
-  it.skip('Password updated successfully', async () => {
+  it('Password updated successfully', async () => {
     const tokenQuery = faker.string.alphanumeric(10);
+
     const changePasswordInput = {
       password: faker.internet.password(),
       newPassword: faker.internet.password(),
@@ -33,15 +34,6 @@ describe('PATCH /my-account/change-password', () => {
     };
 
     const userId = faker.string.uuid() as unknown as UUID;
-
-    const response = await serverStub.inject({
-      method: 'PATCH',
-      url: '/my-account/change-password',
-      payload: changePasswordInput,
-      headers: {
-        authorization: `Bearer ${tokenQuery}`,
-      },
-    });
 
     const checkAutheticationMiddlewareSpy = jest
       .spyOn(CheckAutheticationMiddleware.prototype, 'handle')
@@ -54,8 +46,17 @@ describe('PATCH /my-account/change-password', () => {
       });
 
     const changePasswordServiceSpy = jest
-      .spyOn(ChangePassowrdService.prototype, 'execute')
+      .spyOn(ChangePasswordService.prototype, 'execute')
       .mockResolvedValue(undefined);
+
+    const response = await serverStub.inject({
+      method: 'PATCH',
+      url: '/my-account/change-password',
+      payload: changePasswordInput,
+      headers: {
+        authorization: `Bearer ${tokenQuery}`,
+      },
+    });
 
     expect(response.statusCode).toBe(HttpStatusCode.NO_CONTENT);
     expect(response.body).toBe('');
@@ -90,7 +91,7 @@ describe('PATCH /my-account/change-password', () => {
 
     const messageError = 'error';
     const changePasswordServiceSpy = jest
-      .spyOn(ChangePassowrdService.prototype, 'execute')
+      .spyOn(ChangePasswordService.prototype, 'execute')
       .mockRejectedValue(new BadRequestError(messageError));
 
     const response = await serverStub.inject({

@@ -5,7 +5,7 @@ import { BadRequestError } from '../config/BaseError';
 import { NON_EXISTENT_USER, PASSWORD_INCORRECT } from '../utils/messages';
 import { UUID } from '../@types';
 
-export class ChangePassowrdService {
+export class ChangePasswordService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(

@@ -328,16 +328,13 @@ export const changePassword: FastifySchema = {
   },
 };
 
-export const newAccessTokenAndRefreshToken: FastifySchema = {
+export const newRefreshToken: FastifySchema = {
   tags: ['Access token and refresh token'],
   body: {
     type: 'object',
-    required: ['accessToken', 'refreshToken'],
+    required: ['refreshToken'],
     additionalProperties: false,
     properties: {
-      accessToken: {
-        type: 'string',
-      },
       refreshToken: {
         type: 'string',
       },

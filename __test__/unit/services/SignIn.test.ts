@@ -75,9 +75,9 @@ describe('SignInService', () => {
       refreshToken: refreshTokenMock,
     });
 
-    expect(generateRefreshTokenAndAccessTokenServiceStub.execute).toHaveBeenCalledWith(
-      idMock,
-    );
+    expect(generateRefreshTokenAndAccessTokenServiceStub.execute).toHaveBeenCalledWith({
+      userId: idMock,
+    });
   });
 
   it('should return bad request error if passwords do not match', async () => {

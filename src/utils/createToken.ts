@@ -8,7 +8,7 @@ export const createToken = (
 ): Promise<string> =>
   new Promise((resolve, reject) => {
     jwt.sign(payload, secret, { expiresIn }, (error, token) => {
-      if (typeof token === 'string') resolve(token);
       if (error) reject(new BadRequestError(error?.name, [error?.message]));
+      else if (token) resolve(token);
     });
   });

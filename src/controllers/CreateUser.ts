@@ -9,7 +9,7 @@ export class CreateUserController extends BaseEntity {
     super();
   }
 
-  handler = async (
+  handlerRequest = async (
     request: FastifyRequest<{
       Body: types.CreateUser;
     }>,

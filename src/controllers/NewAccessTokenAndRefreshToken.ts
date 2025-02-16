@@ -10,22 +10,18 @@ export class NewAccessTokenAndRefreshTokenController extends BaseEntity {
   ) {
     super();
   }
-  handler = async (
+  handlerRequest = async (
     request: FastifyRequest<{
-      Body: types.AccessTokenAndRefreshToken;
-    }> &
-      types.Access,
+      Body: types.RefreshToken;
+    }>,
     reply: FastifyReply,
   ) => {
-    const userId = request.access?.id as types.UUID;
-    const { accessToken, refreshToken } = request.body;
+    const { refreshToken } = request.body;
 
     try {
-      const tokens = await this.generateRefreshTokenAndAccessTokenService.execute(
-        userId,
-        accessToken,
+      const tokens = await this.generateRefreshTokenAndAccessTokenService.execute({
         refreshToken,
-      );
+      });
       return reply.code(HttpStatusCode.OK).send(tokens);
     } catch (error) {
       this.handlerErrorController(error, reply);

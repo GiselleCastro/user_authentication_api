@@ -6,7 +6,7 @@ export const CreateUser = z.object({
   username: z
     .string()
     .trim()
-    .regex(/^[A-z-0-9]$/),
+    .regex(/^[A-z-0-9]+$/),
   email: z.string().trim().min(1).email(),
   password: z.string().trim().min(1),
   confirmPassword: z.string().trim().min(1),
@@ -40,7 +40,6 @@ export const UserId = z.object({
   userId: z.custom<UUID>((i) => (typeof i === 'string' ? validate(i) : false)),
 });
 
-export const AccessTokenAndRefreshToken = z.object({
-  accessToken: z.string().trim().min(1),
+export const RefreshToken = z.object({
   refreshToken: z.string().trim().min(1),
 });

@@ -11,7 +11,7 @@ export class SendEmailResetPasswordController extends BaseEntity {
     super();
   }
 
-  handler = async (
+  handlerRequest = async (
     request: FastifyRequest<{
       Body: types.LoginToRecoverPassword;
     }>,
@@ -21,7 +21,6 @@ export class SendEmailResetPasswordController extends BaseEntity {
 
     try {
       await this.sendEmailResetPasswordService.execute(login);
-
       return reply.code(HttpStatusCode.NO_CONTENT).send();
     } catch (error) {
       this.handlerErrorController(error, reply, { error });

@@ -2,19 +2,16 @@ import { CheckAutheticationMiddleware } from './CheckAuthetication';
 import { ValidateSchemaMiddleware } from './ValidateSchema';
 import { ParameterType } from '../enum/index';
 import { CheckAuthorizationMiddleware } from './CheckAuthorization';
-import { CheckRefreshTokenMiddleware } from './CheckRefreshToken';
 import * as Schema from '../schema';
 
 export const checkAuthetication = new CheckAutheticationMiddleware().handle;
 
 export const checkAuthorization = new CheckAuthorizationMiddleware().handle;
 
-export const checkRefreshToken = new CheckRefreshTokenMiddleware().handle;
-
 const validateSchemaMiddleware = new ValidateSchemaMiddleware().handle;
 
-export const validateAccessTokenAndRefreshToken = validateSchemaMiddleware(
-  Schema.AccessTokenAndRefreshToken,
+export const validateRefreshToken = validateSchemaMiddleware(
+  Schema.RefreshToken,
   ParameterType.BODY,
 );
 

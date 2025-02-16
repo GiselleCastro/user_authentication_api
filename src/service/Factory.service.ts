@@ -3,7 +3,7 @@ import { ResetPasswordRepository } from '../repositories/ResetPassword';
 import { RefreshTokenRepository } from '../repositories/RefreshToken';
 import { SendEmailService } from '../config/EmailSending.config';
 
-import { ChangePassowrdService } from './ChangePassword';
+import { ChangePasswordService } from './ChangePassword';
 import { ConfirmEmailService } from './ConfirmEmail';
 import { CreateUserService } from './CreateUser';
 import { DeleteUserService } from './DeleteUser';
@@ -14,10 +14,10 @@ import { SendEmailResetPasswordService } from './SendEmailResetPassword';
 import { GenerateRefreshTokenAndAccessTokenService } from './GenerateRefreshTokenAndAccessToken';
 import { InvalidateRefreshTokenService } from './InvalidateRefreshToken';
 
-export class ChangePassowrdServiceFactory {
-  static make(): ChangePassowrdService {
+export class ChangePasswordServiceFactory {
+  static make(): ChangePasswordService {
     const userRepository = new UserRepository();
-    return new ChangePassowrdService(userRepository);
+    return new ChangePasswordService(userRepository);
   }
 }
 

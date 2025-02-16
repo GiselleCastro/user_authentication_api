@@ -34,7 +34,7 @@ export class SignInService {
     }
 
     const refreshTokenAndAccessToken =
-      await this.generateRefreshTokenAndAccessTokenService.execute(user.id);
+      await this.generateRefreshTokenAndAccessTokenService.execute({ userId: user.id });
     return refreshTokenAndAccessToken;
   }
 }

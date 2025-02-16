@@ -10,7 +10,7 @@ import * as factory from '../service/Factory.service';
 
 class ChangePasswordControllerFactory {
   static make(): ChangePasswordController {
-    const changePassowrdService = factory.ChangePassowrdServiceFactory.make();
+    const changePassowrdService = factory.ChangePasswordServiceFactory.make();
     return new ChangePasswordController(changePassowrdService);
   }
 }

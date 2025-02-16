@@ -82,16 +82,12 @@ describe('ConfirmEmailService', () => {
   });
 
   it('should return unauthorized error for invalid token', async () => {
-    async () => {
-      const { sut } = makeSut();
-      const tokenMock = faker.string.alphanumeric(10);
+    const { sut } = makeSut();
+    const tokenMock = faker.string.alphanumeric(10);
 
-      (validationToken as jest.Mock).mockRejectedValueOnce(
-        new UnauthorizedError('error'),
-      );
+    (validationToken as jest.Mock).mockRejectedValueOnce(new UnauthorizedError('error'));
 
-      await expect(sut.execute(tokenMock)).rejects.toThrow(UnauthorizedError);
-    };
+    await expect(sut.execute(tokenMock)).rejects.toBeInstanceOf(UnauthorizedError);
   });
 
   it('should return bad request if there is no mail property in the token', async () => {

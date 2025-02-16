@@ -10,7 +10,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>('/register', {
     schema: schemasSwagger.createUser,
     preHandler: [middleware.validateCreateUserInput],
-    handler: controller.createUserController.handler,
+    handler: controller.createUserController.handlerRequest,
   });
 
   fastify.post<{
@@ -18,7 +18,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>('/login', {
     schema: schemasSwagger.login,
     preHandler: [middleware.validateLoginInput],
-    handler: controller.loginController.handler,
+    handler: controller.loginController.handlerRequest,
   });
 
   fastify.post<{
@@ -26,7 +26,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>('/forgot-password', {
     schema: schemasSwagger.forgotPassword,
     preHandler: [middleware.validateLoginToRecoverPasswordInput],
-    handler: controller.sendEmailResetPasswordController.handler,
+    handler: controller.sendEmailResetPasswordController.handlerRequest,
   });
 
   fastify.post<{
@@ -35,7 +35,7 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>('/reset-password', {
     schema: schemasSwagger.resetPassword,
     preHandler: [middleware.validateTokenInput, middleware.validateNewPasswordInput],
-    handler: controller.resetPasswordController.handler,
+    handler: controller.resetPasswordController.handlerRequest,
   });
 
   fastify.get<{
@@ -43,17 +43,14 @@ export const publicRoutes = async (fastify: FastifyInstance) => {
   }>('/confirm-email', {
     schema: schemasSwagger.confirmEmail,
     preHandler: [middleware.validateTokenInput],
-    handler: controller.confirmEmailController.handler,
+    handler: controller.confirmEmailController.handlerRequest,
   });
 
   fastify.post<{
-    Body: types.AccessTokenAndRefreshToken;
+    Body: types.RefreshToken;
   }>('/refresh-token', {
-    schema: schemasSwagger.newAccessTokenAndRefreshToken,
-    preHandler: [
-      middleware.validateAccessTokenAndRefreshToken,
-      middleware.checkRefreshToken,
-    ],
-    handler: controller.newAccessTokenAndRefreshTokenController.handler,
+    schema: schemasSwagger.newRefreshToken,
+    preHandler: [middleware.validateRefreshToken],
+    handler: controller.newAccessTokenAndRefreshTokenController.handlerRequest,
   });
 };

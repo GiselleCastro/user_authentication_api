@@ -9,7 +9,7 @@ export class ResetPasswordController extends BaseEntity {
     super();
   }
 
-  handler = async (
+  handlerRequest = async (
     request: FastifyRequest<{
       Body: types.NewPassword;
       Querystring: types.Token;

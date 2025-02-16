@@ -4,7 +4,6 @@ import { ResetPasswordRepository } from '../../../src/repositories/ResetPassword
 import { faker } from '@faker-js/faker';
 import { validationToken } from '../../../src/utils/validationToken';
 import {
-  BadRequestError,
   UnauthorizedError,
   UnprocessableEntityError,
 } from '../../../src/config/BaseError';
@@ -80,7 +79,6 @@ describe('ResetPasswordService', () => {
 
   it('should return bad request if there is no id property in the token', async () => {
     const { sut, resetPasswordRepositoryStub } = makeSut();
-    const userId = faker.string.uuid() as unknown as UUID;
     const loginMock = faker.internet.email();
     const tokenMock = faker.string.alphanumeric(10);
 

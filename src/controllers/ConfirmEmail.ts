@@ -9,7 +9,7 @@ export class ConfirmEmailController extends BaseEntity {
     super();
   }
 
-  handler = async (
+  handlerRequest = async (
     request: FastifyRequest<{
       Querystring: types.Token;
     }>,

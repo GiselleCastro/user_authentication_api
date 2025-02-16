@@ -6,6 +6,7 @@ import { UnprocessableEntityError } from '../../../src/config/BaseError';
 import { UUID } from '../../../src/@types';
 
 jest.mock('../../../src/database/knex', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const knex = require('knex');
   return {
     db: knex({ client: MockClient }),
