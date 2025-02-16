@@ -1,7 +1,7 @@
 import type { FastifySchema } from 'fastify/types/schema';
 
 export const createUser: FastifySchema = {
-  tags: ['User register'],
+  tags: ['Public User register'],
   body: {
     type: 'object',
     properties: {
@@ -59,7 +59,7 @@ export const createUser: FastifySchema = {
 };
 
 export const login: FastifySchema = {
-  tags: ['User login'],
+  tags: ['Public User login'],
   body: {
     type: 'object',
     required: ['login', 'password'],
@@ -118,7 +118,7 @@ export const login: FastifySchema = {
 };
 
 export const forgotPassword: FastifySchema = {
-  tags: ['Password recovery'],
+  tags: ['Public Password Recovery'],
   body: {
     type: 'object',
     required: ['login'],
@@ -153,7 +153,7 @@ export const forgotPassword: FastifySchema = {
 };
 
 export const resetPassword: FastifySchema = {
-  tags: ['Password recovery'],
+  tags: ['Public Password Recovery'],
   querystring: {
     type: 'object',
     required: ['token'],
@@ -227,7 +227,7 @@ export const resetPassword: FastifySchema = {
 };
 
 export const confirmEmail: FastifySchema = {
-  tags: ['User register'],
+  tags: ['Public User register'],
   querystring: {
     type: 'object',
     required: ['token'],
@@ -274,7 +274,7 @@ export const confirmEmail: FastifySchema = {
 };
 
 export const changePassword: FastifySchema = {
-  tags: ['User logged in'],
+  tags: ['Private Change Password'],
   security: [{ authorization: [] }],
   body: {
     type: 'object',
@@ -329,7 +329,7 @@ export const changePassword: FastifySchema = {
 };
 
 export const newRefreshToken: FastifySchema = {
-  tags: ['Access token and refresh token'],
+  tags: ['Public Access token and refresh token'],
   body: {
     type: 'object',
     required: ['refreshToken'],
@@ -386,25 +386,65 @@ export const newRefreshToken: FastifySchema = {
 };
 
 export const logout: FastifySchema = {
-  tags: ['User logout'],
+  tags: ['Private User Logout'],
   security: [{ authorization: [] }],
   summary: 'Delete refresh token',
   response: {
     '204': {
       description: 'Logout successfully',
       type: 'object',
+    },
+    '400': {
+      description: 'Non-existent user or error validation',
+      type: 'object',
       properties: {
-        accessToken: {
+        message: {
           type: 'string',
         },
-        refreshToken: {
-          type: 'string',
+        details: {
+          type: 'array',
           optional: true,
         },
       },
     },
+  },
+};
+
+export const deleteAccount: FastifySchema = {
+  tags: ['Private Delete Account'],
+  security: [{ authorization: [] }],
+  body: {
+    type: 'object',
+    required: ['password'],
+    additionalProperties: false,
+    properties: {
+      password: {
+        type: 'string',
+      },
+    },
+  },
+  summary: 'User delete your account',
+  response: {
+    '204': {
+      description: 'Account deleted successfully',
+      type: 'null',
+      examples: [],
+    },
     '400': {
-      description: 'Non-existent user or error validation',
+      description: 'Password incorrect',
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+        },
+        details: {
+          type: 'array',
+          optional: true,
+        },
+      },
+    },
+    '401': {
+      description: 'Invalid token',
       type: 'object',
       properties: {
         message: {

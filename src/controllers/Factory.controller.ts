@@ -6,6 +6,7 @@ import { ConfirmEmailController } from './ConfirmEmail';
 import { SendEmailResetPasswordController } from './SendEmailResetPassword';
 import { NewAccessTokenAndRefreshTokenController } from './NewAccessTokenAndRefreshToken';
 import { LogoutController } from './Logout';
+import { DeleteUserController } from './DeleteUser';
 import * as factory from '../service/Factory.service';
 
 class ChangePasswordControllerFactory {
@@ -78,3 +79,12 @@ class NewAccessTokenAndRefreshTokenControllerFactory {
 }
 export const newAccessTokenAndRefreshTokenController =
   NewAccessTokenAndRefreshTokenControllerFactory.make();
+
+export class DeleteUserControllerFactory {
+  static make(): DeleteUserController {
+    const deleteUserService = factory.DeleteUserServiceFactory.make();
+    return new DeleteUserController(deleteUserService);
+  }
+}
+
+export const deleteUserController = DeleteUserControllerFactory.make();

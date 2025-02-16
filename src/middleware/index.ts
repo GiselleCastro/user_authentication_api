@@ -44,3 +44,8 @@ export const validateTokenInput = validateSchemaMiddleware(
   Schema.Token,
   ParameterType.QUERY,
 );
+
+export const validateDeleteAccountInput = validateSchemaMiddleware(
+  Schema.Password,
+  ParameterType.BODY,
+);

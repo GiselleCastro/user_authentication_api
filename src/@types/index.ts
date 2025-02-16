@@ -9,7 +9,7 @@ export type LoginToRecoverPassword = z.infer<typeof Schema.LoginToRecoverPasswor
 export type NewPassword = z.infer<typeof Schema.NewPassword>;
 export type ChangePassword = z.infer<typeof Schema.ChangePassword>;
 export type Token = z.infer<typeof Schema.Token>;
-export type UserId = z.infer<typeof Schema.UserId>;
+export type Password = z.infer<typeof Schema.Password>;
 
 export type UUID = typeof uuid;
 

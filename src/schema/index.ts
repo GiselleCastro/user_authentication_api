@@ -37,3 +37,7 @@ export const Token = z.object({
 export const RefreshToken = z.object({
   refreshToken: z.string().trim().min(1),
 });
+
+export const Password = z.object({
+  password: z.string().trim().min(1),
+});

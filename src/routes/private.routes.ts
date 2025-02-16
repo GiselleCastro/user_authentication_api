@@ -19,4 +19,12 @@ export const privateRoutes = async (fastify: FastifyInstance) => {
     schema: schemasSwagger.logout,
     handler: controller.logoutController.handler,
   });
+
+  fastify.delete<{
+    Body: types.ChangePassword;
+  }>('/delete-account', {
+    schema: schemasSwagger.deleteAccount,
+    preHandler: [middleware.validateDeleteAccountInput],
+    handler: controller.deleteUserController.handlerRequest,
+  });
 };
