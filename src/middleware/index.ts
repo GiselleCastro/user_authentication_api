@@ -44,8 +44,3 @@ export const validateTokenInput = validateSchemaMiddleware(
   Schema.Token,
   ParameterType.QUERY,
 );
-
-export const validateUserIdInput = validateSchemaMiddleware(
-  Schema.UserId,
-  ParameterType.PARAMS,
-);

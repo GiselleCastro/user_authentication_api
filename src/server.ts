@@ -12,7 +12,7 @@ const { ENVIRONMENT_ENV } = constants;
 
 const { SERVER_PORT } = constants;
 
-export const buildServer = () => {
+const buildServer = () => {
   const server: FastifyInstance = Fastify({
     logger: ENVIRONMENT_ENV === Environment.DEVELOPMENT,
   });

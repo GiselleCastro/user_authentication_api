@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify/types/instance';
 import { SignInService } from '../../../src/service/SignIn';
-import { buildServer } from '../../../src/server';
+import { server } from '../../../src/server';
 import { faker } from '@faker-js/faker';
 import { BadRequestError } from '../../../src/config/BaseError';
 import { ERROR_VALIDATION } from '../../../src/utils/messages';
@@ -12,7 +12,7 @@ describe('POST /login', () => {
   let serverStub: FastifyInstance;
 
   beforeAll(async () => {
-    serverStub = buildServer();
+    serverStub = server;
   });
 
   afterAll(async () => {

@@ -82,7 +82,7 @@ export class ResetPasswordServiceFactory {
     return new ResetPasswordService(userRepository, resetPasswordRepository);
   }
 }
-export class SendEmailConfirmEmailServiceFactory {
+class SendEmailConfirmEmailServiceFactory {
   static make(): SendEmailConfirmEmailService {
     const sendEmailService = new SendEmailService();
     return new SendEmailConfirmEmailService(sendEmailService);

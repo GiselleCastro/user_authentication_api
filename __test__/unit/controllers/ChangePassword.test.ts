@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify/types/instance';
 import { ChangePasswordService } from '../../../src/service/ChangePassword';
 import { CheckAutheticationMiddleware } from '../../../src/middleware/CheckAuthetication';
-import { buildServer } from '../../../src/server';
+import { server } from '../../../src/server';
 import { faker } from '@faker-js/faker';
 import { BadRequestError } from '../../../src/config/BaseError';
 import { UUID } from '../../../src/@types';
@@ -15,7 +15,7 @@ describe('PATCH /my-account/change-password', () => {
   let serverStub: FastifyInstance;
 
   beforeAll(async () => {
-    serverStub = buildServer();
+    serverStub = server;
   });
 
   afterAll(async () => {
